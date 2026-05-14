@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PRODESP — Portal de Editais</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="logo-group">
+    <div class="logo-badge">Pr</div>
+    <div class="logo-text">
+      <span class="logo-name">PRODESP</span>
+      <span class="logo-sub">GOVERNO DO ESTADO DE SÃO PAULO</span>
+    </div>
+  </div>
+  <nav>
+    <a href="#" class="nav-link">Editais</a>
+    <a href="#" class="nav-link">Legislação</a>
+    <a href="#" class="nav-link">Contato</a>
+    <button class="btn-header-login" onclick="openModal('login')">Entrar</button>
+    <button class="btn-header-register" onclick="openModal('register')">Cadastrar-se</button>
+  </nav>
+</header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span>🏛</span> Portal Oficial · Governo do Estado de São Paulo
+      </div>
+      <h1 class="hero-title">
+        Portal de <em>Editais</em><br/>e Licitações
+      </h1>
+      <p class="hero-desc">
+        Acesse, acompanhe e participe dos processos licitatórios da PRODESP com transparência,
+        segurança e praticidade em uma plataforma unificada.
+      </p>
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="openModal('register')">
+          ✦ Cadastrar-se gratuitamente
+        </button>
+        <button class="btn-secondary" onclick="openModal('login')">
+          → Acessar minha conta
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">347</span>
+          <span class="stat-label">Editais ativos</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">12k+</span>
+          <span class="stat-label">Fornecedores cadastrados</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">98%</span>
+          <span class="stat-label">Transparência comprovada</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-card-area">
+      <div class="hero-illustration">
+        <div class="glass-card">
+          <div class="gc-header">
+            <span class="gc-title">EDITAIS RECENTES</span>
+            <span class="gc-badge">● Ao vivo</span>
+          </div>
+          <div class="edital-row">
+            <div class="edital-icon icon-blue">📄</div>
+            <div class="edital-info">
+              <div class="edital-name">Pregão Eletrônico 041/2025</div>
+              <div class="edital-meta">Serviços de TI · até 28/06/2025</div>
+            </div>
+            <span class="edital-tag tag-open">Aberto</span>
+          </div>
+          <div class="edital-row">
+            <div class="edital-icon icon-gold">📋</div>
+            <div class="edital-info">
+              <div class="edital-name">Concorrência 008/2025</div>
+              <div class="edital-meta">Infraestrutura · até 15/07/2025</div>
+            </div>
+            <span class="edital-tag tag-soon">Em breve</span>
+          </div>
+          <div class="edital-row">
+            <div class="edital-icon icon-green">🗂</div>
+            <div class="edital-info">
+              <div class="edital-name">Tomada de Preços 012/2025</div>
+              <div class="edital-meta">Consultoria · encerrado</div>
+            </div>
+            <span class="edital-tag tag-closed">Encerrado</span>
+          </div>
+        </div>
+        <div class="float-chip float-chip-1">
+          <span class="chip-icon">🔔</span>
+          <span class="chip-text">Novo edital: <span class="chip-num">+3 hoje</span></span>
+        </div>
+        <div class="float-chip float-chip-2">
+          <span class="chip-icon">🔒</span>
+          <span class="chip-text">Ambiente <span class="chip-num">seguro</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FEATURES ═══════════ -->
+<section class="features">
+  <div class="section-label">Por que usar o portal</div>
+  <h2 class="section-title">Tudo que você precisa num só lugar</h2>
+  <p class="section-sub">Uma plataforma pensada para fornecedores, gestores e cidadãos que acompanham os processos públicos do Estado.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <div class="feature-name">Busca Avançada</div>
+      <div class="feature-desc">Filtre editais por modalidade, valor, área e prazo. Encontre oportunidades com rapidez e precisão.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔔</div>
+      <div class="feature-name">Alertas Personalizados</div>
+      <div class="feature-desc">Receba notificações por e-mail sobre novos editais que se encaixam no seu perfil de interesse.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📁</div>
+      <div class="feature-name">Gestão de Documentos</div>
+      <div class="feature-desc">Envie e gerencie documentos de habilitação com segurança. Acompanhe o status em tempo real.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-name">Painel do Fornecedor</div>
+      <div class="feature-desc">Visualize todas as suas participações, prazos e resultados em um painel centralizado e intuitivo.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚖️</div>
+      <div class="feature-name">Conformidade Legal</div>
+      <div class="feature-desc">Acesse a legislação vigente e garanta que suas propostas estejam em total conformidade com a Lei 14.133/2021.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛡️</div>
+      <div class="feature-name">Segurança e Auditoria</div>
+      <div class="feature-desc">Todas as ações são registradas em log de auditoria imutável, garantindo integridade e rastreabilidade.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo-badge" style="width:34px;height:34px;font-size:0.95rem;">Pr</div>
+      <div>
+        <div class="footer-name">PRODESP</div>
+        <div class="footer-gov">Companhia de Processamento de Dados do Estado de São Paulo</div>
+      </div>
+    </div>
+    <div class="footer-copy">© 2025 PRODESP · Governo do Estado de São Paulo</div>
+  </div>
+</footer>
+
+<!-- ═══════════ MODAL ═══════════ -->
+<div class="overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="mainModal">
+    <div class="modal-top">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-logo">
+        <div class="modal-badge">Pr</div>
+        <span class="modal-brand">PRODESP</span>
+      </div>
+      <div class="modal-headline" id="modalHeadline">Acesse sua conta</div>
+      <div class="modal-sub" id="modalSub">Portal de Editais e Licitações</div>
+    </div>
+
+    <div class="modal-body">
+      <!-- Tabs -->
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">Entrar</button>
+        <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">Criar conta</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="form-panel active" id="panelLogin">
+        <div class="form-group">
+          <label class="form-label">CPF ou CNPJ</label>
+          <input class="form-input" type="text" placeholder="000.000.000-00" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Senha</label>
+          <input class="form-input" type="password" placeholder="••••••••" />
+        </div>
+        <a href="#" class="form-forgot">Esqueci minha senha</a>
+        <button class="btn-submit">
+          Entrar no Portal →
+        </button>
+        <div class="divider">
+          <div class="divider-line"></div>
+          <span class="divider-text">ou acesse com</span>
+          <div class="divider-line"></div>
+        </div>
+        <button class="btn-gov">
+          🏛 &nbsp;gov.br — Login Cidadão
+        </button>
+        <div class="switch-note">
+          Não tem conta? <a href="#" class="switch-link" onclick="switchTab('register')">Cadastre-se gratuitamente</a>
+        </div>
+      </div>
+
+      <!-- REGISTER -->
+      <div class="form-panel" id="panelRegister">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nome completo</label>
+            <input class="form-input" type="text" placeholder="João Silva" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">CPF / CNPJ</label>
+            <input class="form-input" type="text" placeholder="000.000.000-00" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail corporativo</label>
+          <input class="form-input" type="email" placeholder="nome@empresa.com.br" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Senha</label>
+            <input class="form-input" type="password" placeholder="••••••••" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirmar senha</label>
+            <input class="form-input" type="password" placeholder="••••••••" />
+          </div>
+        </div>
+        <div class="terms-check">
+          <input type="checkbox" id="terms" />
+          <label for="terms">
+            Li e aceito os <a href="#">Termos de Uso</a> e a <a href="#">Política de Privacidade</a> do Portal de Editais da PRODESP.
+          </label>
+        </div>
+        <button class="btn-submit">
+          Criar minha conta ✦
+        </button>
+        <div class="divider">
+          <div class="divider-line"></div>
+          <span class="divider-text">ou cadastre via</span>
+          <div class="divider-line"></div>
+        </div>
+        <button class="btn-gov">
+          🏛 &nbsp;gov.br — Login Cidadão
+        </button>
+        <div class="switch-note">
+          Já tem conta? <a href="#" class="switch-link" onclick="switchTab('login')">Entrar agora</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
