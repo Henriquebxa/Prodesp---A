@@ -589,6 +589,7 @@ nav {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s;
+    overflow-y: auto;
 }
 
 .overlay.active {
@@ -602,9 +603,9 @@ nav {
     width: 100%;
     max-width: 460px;
     box-shadow: 0 40px 100px rgba(0, 0, 0, 0.35);
-    overflow: hidden;
     transform: translateY(30px) scale(0.97);
     transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin: auto;
 }
 
 .overlay.active .modal {
