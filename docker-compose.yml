@@ -1,0 +1,16 @@
+services:
+  prodesp-db:
+    image: mysql:latest
+    container_name: prodesp
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: estruturamysqlprodesp
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: prodesp
+    ports:
+      - "127.0.0.1:3007:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
