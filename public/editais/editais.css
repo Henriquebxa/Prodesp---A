@@ -1,0 +1,280 @@
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Montserrat', sans-serif;
+    overflow-x:hidden;
+    background:#fff;
+}
+
+/* TOPO GOVERNO */
+
+.gov-bar{
+    background:#000;
+    height:70px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 40px;
+}
+
+.gov-logo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    color:white;
+}
+
+.sp-box{
+    width:50px;
+    height:35px;
+    background:red;
+    border-radius:5px;
+}
+
+.gov-logo h1{
+    font-size:20px;
+    font-weight:800;
+}
+
+.gov-logo p{
+    font-size:11px;
+}
+
+.accessibility{
+    display:flex;
+    gap:10px;
+}
+
+.accessibility span{
+    width:32px;
+    height:32px;
+
+    border:1px solid #999;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+    font-size:14px;
+}
+
+/* MENU */
+
+.menu-bar{
+    background:#5f168e;
+
+    height:85px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 40px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.dot{
+    width:16px;
+    height:16px;
+    background:white;
+    border-radius:50%;
+}
+
+.brand h2{
+    color:white;
+    font-size:42px;
+    font-weight:800;
+    font-style:italic;
+}
+
+/* SEARCH */
+
+.search-box{
+    width:55%;
+    position:relative;
+}
+
+.search-box input{
+    width:100%;
+    height:48px;
+
+    border:none;
+    border-radius:30px;
+
+    padding-left:25px;
+
+    outline:none;
+
+    font-size:16px;
+}
+
+/* MENU ICON */
+
+.menu-icon{
+    color:white;
+    font-size:48px;
+    cursor:pointer;
+}
+
+/* HERO */
+
+.hero{
+    position:relative;
+
+    height:700px;
+
+    background:
+    linear-gradient(rgba(123,59,190,0.65), rgba(123,59,190,0.65)),
+    url('https://www.prodesp.sp.gov.br/wp-content/uploads/2023/01/Capturar.jpg');
+
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    align-items:center;
+}
+
+/* TEXTO */
+
+.hero-content{
+    padding-left:100px;
+    color:white;
+}
+.hero-content:hover{
+        cursor: pointer;
+    transform: scale(1.1);
+}
+.hero-content h1{
+    font-size:95px;
+    font-weight:800;
+    font-style:italic;
+    line-height:0.95;
+}
+
+.arrow{
+    display:block;
+    font-size:90px;
+    margin-top:20px;
+}
+
+/* CARDS */
+
+.cards{
+    position:absolute;
+
+    bottom:40px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:90%;
+
+    background:white;
+
+    border-radius:25px;
+
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+
+    overflow:hidden;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.card{
+    padding:35px;
+
+    border-right:1px solid #ddd;
+}
+
+.card:last-child{
+    border-right:none;
+}
+
+.card h3{
+    font-size:24px;
+    margin-bottom:15px;
+}
+
+.card p{
+    font-size:15px;
+    color:#666;
+    line-height:1.5;
+    margin-bottom:20px;
+}
+
+.card a{
+    text-decoration:none;
+    color:#5f168e;
+    font-weight:700;
+}
+
+/* RESPONSIVO */
+
+@media(max-width:1100px){
+
+    .hero-content h1{
+        font-size:70px;
+    }
+
+    .cards{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:700px){
+
+    .gov-bar{
+        padding:0 20px;
+    }
+
+    .menu-bar{
+        padding:0 20px;
+    }
+
+    .search-box{
+        width:45%;
+    }
+
+    .hero{
+        height:900px;
+    }
+
+    .hero-content{
+        padding-left:30px;
+    }
+
+    .hero-content h1{
+        font-size:55px;
+    }
+
+    .cards{
+        width:95%;
+        grid-template-columns:1fr;
+        bottom:20px;
+    }
+
+    .card{
+        border-right:none;
+        border-bottom:1px solid #ddd;
+    }
+
+    .card:last-child{
+        border-bottom:none;
+    }
+}

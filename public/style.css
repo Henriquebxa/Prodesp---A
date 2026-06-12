@@ -1,0 +1,73 @@
+:root{
+    --primaria: #500878;
+    --secundaria: #ae8cc0;
+    --terciaria: #753b94;
+    --fundo: #aaaaaa;
+}
+
+.menu-bar{
+    background:#5f168e;
+
+    height:85px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 40px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.dot{
+    width:16px;
+    height:16px;
+    background:white;
+    border-radius:50%;
+}
+
+.brand h2{
+    color:white;
+    font-size:42px;
+    font-weight:800;
+    font-style:italic;
+}
+
+.search-box{
+    width:55%;
+    position:relative;
+}
+
+.search-box input{
+    width:100%;
+    height:48px;
+
+    border:none;
+    border-radius:30px;
+
+    padding-left:25px;
+
+    outline:none;
+
+    font-size:16px;
+}
+
+.hero{
+    position:relative;
+
+    height:700px;
+
+    background:
+    linear-gradient(rgba(123,59,190,0.65), rgba(123,59,190,0.65)),
+    url('https://www.prodesp.sp.gov.br/wp-content/uploads/2023/01/Capturar.jpg');
+
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    align-items:center;
+}
