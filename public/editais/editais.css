@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 
 *{
@@ -7,19 +6,13 @@
     box-sizing:border-box;
 }
 
-*, *::before, *::after {
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-}
-*::-webkit-scrollbar {
-    display: none !important;
-}
-
 body{
     font-family:'Montserrat', sans-serif;
     overflow-x:hidden;
     background:#fff;
 }
+
+/* TOPO GOVERNO */
 
 .gov-bar{
     background:#000;
@@ -73,14 +66,9 @@ body{
 
     color:white;
     font-size:14px;
-=======
-:root{
-    --primaria: #500878;
-    --secundaria: #ae8cc0;
-    --terciaria: #753b94;
-    --fundo: #aaaaaa;
->>>>>>> 57bc4130e96f83752410c566ff64219aae7da717
 }
+
+/* MENU */
 
 .menu-bar{
     background:#5f168e;
@@ -114,10 +102,8 @@ body{
     font-style:italic;
 }
 
-<<<<<<< HEAD
+/* SEARCH */
 
-=======
->>>>>>> 57bc4130e96f83752410c566ff64219aae7da717
 .search-box{
     width:55%;
     position:relative;
@@ -137,7 +123,7 @@ body{
     font-size:16px;
 }
 
-<<<<<<< HEAD
+/* MENU ICON */
 
 .menu-icon{
     color:white;
@@ -145,9 +131,8 @@ body{
     cursor:pointer;
 }
 
+/* HERO */
 
-=======
->>>>>>> 57bc4130e96f83752410c566ff64219aae7da717
 .hero{
     position:relative;
 
@@ -162,8 +147,9 @@ body{
 
     display:flex;
     align-items:center;
-<<<<<<< HEAD
 }
+
+/* TEXTO */
 
 .hero-content{
     padding-left:100px;
@@ -186,6 +172,7 @@ body{
     margin-top:20px;
 }
 
+/* CARDS */
 
 .cards{
     position:absolute;
@@ -237,82 +224,7 @@ body{
     font-weight:700;
 }
 
-.menu-checkbox {
-    display: none;
-}
-
-.menu-btn {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 35px;
-    height: 24px;
-    cursor: pointer;
-    z-index: 10; 
-}
-
-.menu-btn span {
-    display: block;
-    height: 4px;
-    width: 100%;
-    background-color: white;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-}
-
-.menu-itens {
-    list-style: none;
-    position: absolute;
-    top: 155px; 
-    left: 975px;
-    width: 300px;
-    background-color: #4c1072; 
-    display: flex;
-    flex-direction: column;
-    z-index: 5;
-    
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: all 0.4s ease-in-out;
-    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-}
-
-.menu-itens li {
-    text-align: center;
-}
-
-.menu-itens li a {
-    display: block;
-    padding: 20px;
-    color: white;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 18px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: background 0.2s;
-}
-
-.menu-itens li a:hover {
-    background-color: #5f168e;
-}
-
-.menu-checkbox:checked ~ .menu-itens {
-    max-height: 200px; 
-    opacity: 1;
-}
-
-.menu-checkbox:checked ~ .menu-btn span:nth-child(1) {
-    transform: translateY(10px) rotate(45deg);
-}
-
-.menu-checkbox:checked ~ .menu-btn span:nth-child(2) {
-    opacity: 0;
-}
-
-.menu-checkbox:checked ~ .menu-btn span:nth-child(3) {
-    transform: translateY(-10px) rotate(-45deg);
-}
+/* RESPONSIVO */
 
 @media(max-width:1100px){
 
@@ -365,6 +277,4 @@ body{
     .card:last-child{
         border-bottom:none;
     }
-=======
->>>>>>> 57bc4130e96f83752410c566ff64219aae7da717
 }

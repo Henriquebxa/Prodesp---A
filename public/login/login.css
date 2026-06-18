@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 * {
     box-sizing: border-box;
     margin: 0;
@@ -185,3 +186,12 @@ button[type="submit"]:hover {
         max-width: 280px;
     }
 }
+=======
+:root{
+    --primaria: #500878;
+    --secundaria: #ae8cc0;
+    --terciaria: #753b94;
+    --fundo: #aaaaaa;
+}
+
+>>>>>>> 57bc4130e96f83752410c566ff64219aae7da717
