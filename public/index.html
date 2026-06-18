@@ -1,27 +1,142 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editais</title>
+
+    <title>Prodesp</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body>
+
     <header>
-        <h1>Prodesp</h1>
-        <div class="pesquisa">
-            <input type="text" placeholder="Pesquisar...">
+
+        <div class="gov-bar">
+
+            <div class="gov-logo">
+
+                <span class="sp-box"></span>
+
+                <div>
+                    <h1>SÃO PAULO</h1>
+                    <p>GOVERNO DO ESTADO</p>
+                </div>
+
+            </div>
+
+            <div class="accessibility">
+                <span>A+</span>
+                <span>A-</span>
+                <span>◐</span>
+                <span>⚠</span>
+            </div>
+
         </div>
-        <ul>
-            <li><a href="login/login.html">login</a></li>
-            <li><a href="editais/ver-editais.html">ver editais publicados</a></li>
-            <li><a href="ajuda/ajuda.html">ajuda</a></li>
-        </ul>
+
+        <div class="menu-bar">
+
+            <div class="brand">
+                <span class="dot"></span>
+                <h2>Prodesp</h2>
+            </div>
+
+            <div class="search-box">
+                <input type="text" placeholder="Pesquisar...">
+            </div>
+
+            <input type="checkbox" id="menu-toggle" class="menu-checkbox">
+            
+            <label for="menu-toggle" class="menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+
+            <ul class="menu-itens">
+                <li><a href="login/login.html">Login</a></li>
+                <li><a href="editais/ver-editais.html">Ver Editais</a></li>
+                <li><a href="ajuda/ajuda.html">Ajuda</a></li>
+            </ul>
+
+        </div>
+
     </header>
-    <main>
 
-    </main>
-    <footer>
+    <section class="hero">
 
-    </footer>
+        <div class="hero-content">
+
+            <h1>
+                Editais em
+                <br>
+                destaque
+            </h1>
+
+            <span class="arrow">›</span>
+
+        </div>
+
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Para o cidadão</h3>
+
+                <p>
+                    Serviços e informações que facilitam o seu dia a dia.
+                </p>
+
+                <a href="servicos.html">
+                    Acessar serviços →
+                </a>
+            </div>
+
+            <div class="card">
+                <h3>Para o governo</h3>
+
+                <p>
+                    Soluções tecnológicas para órgãos e entidades públicas.
+                </p>
+
+                <a href="solucoes.html">
+                    Conhecer soluções →
+                </a>
+            </div>
+
+            <div class="card">
+                <h3>Para empresas</h3>
+
+                <p>
+                    Serviços e parcerias que geram valor para o seu negócio.
+                </p>
+
+                <a href="saibamais.html">
+                    Saiba mais →
+                </a>
+            </div>
+
+            <div class="card">
+                <h3>Notícias</h3>
+
+                <p>
+                    Fique por dentro das novidades e ações da Prodesp.
+                </p>
+
+                <a href="vertodas.html">
+                    Ver todas →
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+
 </body>
+
 </html>

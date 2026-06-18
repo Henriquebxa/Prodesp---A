@@ -1,0 +1,353 @@
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+*, *::before, *::after {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+*::-webkit-scrollbar {
+    display: none !important;
+}
+
+body{
+    font-family:'Montserrat', sans-serif;
+    overflow-x:hidden;
+    background:#fff;
+}
+
+.gov-bar{
+    background:#000;
+    height:70px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 40px;
+}
+
+.gov-logo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    color:white;
+}
+
+.sp-box{
+    width:50px;
+    height:35px;
+    background:red;
+    border-radius:5px;
+}
+
+.gov-logo h1{
+    font-size:20px;
+    font-weight:800;
+}
+
+.gov-logo p{
+    font-size:11px;
+}
+
+.accessibility{
+    display:flex;
+    gap:10px;
+}
+
+.accessibility span{
+    width:32px;
+    height:32px;
+
+    border:1px solid #999;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+    font-size:14px;
+}
+
+.menu-bar{
+    background:#5f168e;
+
+    height:85px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 40px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.dot{
+    width:16px;
+    height:16px;
+    background:white;
+    border-radius:50%;
+}
+
+.brand h2{
+    color:white;
+    font-size:42px;
+    font-weight:800;
+    font-style:italic;
+}
+
+
+.search-box{
+    width:55%;
+    position:relative;
+}
+
+.search-box input{
+    width:100%;
+    height:48px;
+
+    border:none;
+    border-radius:30px;
+
+    padding-left:25px;
+
+    outline:none;
+
+    font-size:16px;
+}
+
+
+.menu-icon{
+    color:white;
+    font-size:48px;
+    cursor:pointer;
+}
+
+
+.hero{
+    position:relative;
+
+    height:700px;
+
+    background:
+    linear-gradient(rgba(123,59,190,0.65), rgba(123,59,190,0.65)),
+    url('https://www.prodesp.sp.gov.br/wp-content/uploads/2023/01/Capturar.jpg');
+
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    align-items:center;
+}
+
+.hero-content{
+    padding-left:100px;
+    color:white;
+}
+.hero-content:hover{
+        cursor: pointer;
+    transform: scale(1.1);
+}
+.hero-content h1{
+    font-size:95px;
+    font-weight:800;
+    font-style:italic;
+    line-height:0.95;
+}
+
+.arrow{
+    display:block;
+    font-size:90px;
+    margin-top:20px;
+}
+
+
+.cards{
+    position:absolute;
+
+    bottom:40px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:90%;
+
+    background:white;
+
+    border-radius:25px;
+
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+
+    overflow:hidden;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.card{
+    padding:35px;
+
+    border-right:1px solid #ddd;
+}
+
+.card:last-child{
+    border-right:none;
+}
+
+.card h3{
+    font-size:24px;
+    margin-bottom:15px;
+}
+
+.card p{
+    font-size:15px;
+    color:#666;
+    line-height:1.5;
+    margin-bottom:20px;
+}
+
+.card a{
+    text-decoration:none;
+    color:#5f168e;
+    font-weight:700;
+}
+
+.menu-checkbox {
+    display: none;
+}
+
+.menu-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 35px;
+    height: 24px;
+    cursor: pointer;
+    z-index: 10; 
+}
+
+.menu-btn span {
+    display: block;
+    height: 4px;
+    width: 100%;
+    background-color: white;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.menu-itens {
+    list-style: none;
+    position: absolute;
+    top: 155px; 
+    left: 975px;
+    width: 300px;
+    background-color: #4c1072; 
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+    
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+.menu-itens li {
+    text-align: center;
+}
+
+.menu-itens li a {
+    display: block;
+    padding: 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.2s;
+}
+
+.menu-itens li a:hover {
+    background-color: #5f168e;
+}
+
+.menu-checkbox:checked ~ .menu-itens {
+    max-height: 200px; 
+    opacity: 1;
+}
+
+.menu-checkbox:checked ~ .menu-btn span:nth-child(1) {
+    transform: translateY(10px) rotate(45deg);
+}
+
+.menu-checkbox:checked ~ .menu-btn span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-checkbox:checked ~ .menu-btn span:nth-child(3) {
+    transform: translateY(-10px) rotate(-45deg);
+}
+
+@media(max-width:1100px){
+
+    .hero-content h1{
+        font-size:70px;
+    }
+
+    .cards{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:700px){
+
+    .gov-bar{
+        padding:0 20px;
+    }
+
+    .menu-bar{
+        padding:0 20px;
+    }
+
+    .search-box{
+        width:45%;
+    }
+
+    .hero{
+        height:900px;
+    }
+
+    .hero-content{
+        padding-left:30px;
+    }
+
+    .hero-content h1{
+        font-size:55px;
+    }
+
+    .cards{
+        width:95%;
+        grid-template-columns:1fr;
+        bottom:20px;
+    }
+
+    .card{
+        border-right:none;
+        border-bottom:1px solid #ddd;
+    }
+
+    .card:last-child{
+        border-bottom:none;
+    }
+}

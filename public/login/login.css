@@ -1,0 +1,187 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body,
+html {
+    height: 100%;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.page-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+.banner-side {
+    flex: 1.2;
+    background: linear-gradient(rgba(76, 37, 130, 0.35), rgba(76, 37, 130, 0.35)),
+        url(../img/prodesp.webp) no-repeat center center;
+    background-size: cover;
+    border-right: 4px solid #4c2582;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #ffffff;
+    height: 100%;
+    position: relative;
+}
+
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: #777777;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 30px;
+    align-self: flex-start;
+    padding: 5px 0;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.btn-back:hover {
+    color: #4c2582;
+    transform: translateX(-3px);
+}
+
+.btn-back svg {
+    fill: currentColor;
+    width: 16px;
+    height: 16px;
+}
+
+.brand-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.prodesp-icon {
+    width: 32px;
+    height: 36px;
+    fill: #4c2582;
+}
+
+.prodesp-text {
+    font-size: 24px;
+    font-weight: bold;
+    font-style: italic;
+    color: #4c2582;
+    letter-spacing: -0.5px;
+}
+
+h1 {
+    color: #666666;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    text-align: center;
+}
+
+form {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 11px;
+    color: #8e8e8e;
+    margin-bottom: 2px;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    border: none;
+    border-bottom: 1.5px solid #cccccc;
+    padding: 6px 0;
+    font-size: 14px;
+    color: #333333;
+    background-color: transparent;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-bottom-color: #4c2582;
+}
+
+button[type="submit"] {
+    background-color: #4c2582;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+button[type="submit"]:hover {
+    background-color: #3b1c66;
+}
+
+.form-footer-links {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.form-footer-links a {
+    color: #4c2582;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.form-footer-links a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .banner-side {
+        display: none;
+    }
+
+    main {
+        padding: 20px;
+    }
+
+    form {
+        max-width: 280px;
+    }
+}
