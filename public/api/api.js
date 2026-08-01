@@ -1,20 +1,20 @@
-export async function enviarContato(objetoDados) {
+export async function registrarUsuario(dadosUsuario) {
     try {
-        const resposta = await fetch('https://localhost:3333/login', {
+        const response = await fetch('http://localhost:3333/registrar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json' 
             },
-            body: JSON.stringify(objetoDados) 
+            body: JSON.stringify(dadosUsuario) 
         });
 
-        if (!resposta.ok) {
-            throw new Error('Erro na resposta do servidor');
+        if (!response.ok) {
+            throw new Error(`Erro no servidor (Status: ${response.status})`);
         }
 
-        return await resposta.json();
+        return await response.json();
     } catch (erro) {
         console.error("Falha ao enviar:", erro);
-        return null;
+        throw erro;
     }
 }

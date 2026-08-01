@@ -21,7 +21,7 @@ html {
 .banner-side {
     flex: 1.2;
     background: linear-gradient(rgba(76, 37, 130, 0.35), rgba(76, 37, 130, 0.35)),
-        url(../img/prodesp.webp) no-repeat center center;
+        url() no-repeat center center;
     background-size: cover;
     border-right: 4px solid #4c2582;
 }

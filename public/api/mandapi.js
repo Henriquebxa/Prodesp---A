@@ -1,35 +1,24 @@
-import { enviarContato } from './api.js';
+import { registrarUsuario } from './api.js';
 
-const botao = document.querySelector('#Envia'); 
+document.querySelector('form').addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-botao.addEventListener('click', async (event) => {
-    event.preventDefault(); 
-    const dadosUsuario = {
-        nome: document.getElementById('username').value,
-        cpf: document.getElementById('cpf').value,
-        senha: document.getElementById('password').value
-    };
+    const username = document.getElementById('username').value;
+    const cpf = document.getElementById('cpf').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
 
-    if (!dadosUsuario.nome || !dadosUsuario.cpf || !dadosUsuario.senha) {
-        alert("Por favor, preencha os campos obrigatórios.");
+    if (password !== confirmPassword) {
+        alert('As senhas não coincidem!');
         return;
     }
 
-    console.log("Enviando para o banco:", dadosUsuario);
-    
-    const resultado = await enviarContato(dadosUsuario);
-    
-    if (resultado) {
-        const alerta = document.getElementById('janela-sucesso');
-        const overlay = document.getElementById('notificacao-overlay');
-
-        if (alerta) {
-
-            document.getElementById('username').value = "";
-            document.getElementById('cpf').value = "";
-            document.getElementById('password').value = "";
-        }
-    } else {
-        alert("Erro ao salvar no banco. Verifique o servidor.");
+    try {
+        await registrarUsuario({ username, cpf, password });
+        
+        alert('Usuário cadastrado com sucesso!');
+        window.location.href = '../login/login.html';
+    } catch (error) {
+        alert(error.message);
     }
 });

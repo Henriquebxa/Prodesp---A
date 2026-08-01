@@ -7,3 +7,5 @@ CREATE TABLE `User` (
     UNIQUE INDEX `User_cpf_key`(`cpf`),
     PRIMARY KEY (`id`)
 )
+
+ALTER TABLE `User` MODIFY `cpf` VARCHAR(191) NOT NULL;

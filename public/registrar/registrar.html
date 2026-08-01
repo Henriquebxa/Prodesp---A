@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="login.css">
+    <title>Registrar</title>
+    <link rel="stylesheet" href="registrar.css">
 </head>
 <body>
-        <div class="page-container">
+    <div class="page-container">
         
         <div class="banner-side"></div>
 
         <main>
             
-            <form action="/registrar" method="post">
+            <form>
                 
                 <button type="button" class="btn-back" onclick="window.history.back()">
                     <svg viewBox="0 0 24 24">
@@ -49,15 +49,20 @@
                     <label for="password">Senha:</label>
                     <input type="password" id="password" name="password" required>
                 </div>
+                                
+                <div class="input-group">
+                    <label for="confirm-password">Confirmar Senha:</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div>
 
-                <button type="submit">Entrar</button>
+                <button id='Envia' type="submit">Entrar</button>
 
                 <div class="form-footer-links">
-                    <a href="#">Esqueceu a senha?</a><br>
-                    <span style="color: #777;">Não tem uma conta? </span> <a href="../registrar/registrar.html">Registrar-se</a>
+                    <span style="color: #777;">Já tem uma conta? </span> <a href="../login/login.html">Login</a>
                 </div>
             </form>
         </main>
     </div>
 </body>
+<script type="module" src="../api/mandapi.js"></script>
 </html>
