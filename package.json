@@ -5,6 +5,8 @@
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
-    "cors": "^2.8.6"
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "jsonwebtoken": "^9.0.3"
   }
 }
