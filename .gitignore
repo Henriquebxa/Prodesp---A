@@ -1,4 +1,8 @@
-node_modules
 .env
+newprivate.pem
+newpublic.pem
+docker-compose.yml
+Checkkey.js
+generateKeys.js
 
 /src/generated/prisma
