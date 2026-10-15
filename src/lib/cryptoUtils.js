@@ -13,6 +13,8 @@ function getSecretKey() {
 }
 
 export function encryptCPF(cpf) {
+    if (!cpf) return null;
+
     const key = getSecretKey();
     const iv = crypto.randomBytes(16); 
     const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
@@ -23,11 +25,24 @@ export function encryptCPF(cpf) {
 }
 
 export function decryptCPF(encryptedCPF) {
-    if (!encryptedCPF) return null;
+    if (!encryptedCPF || typeof encryptedCPF !== 'string') {
+        return null;
+    }
     
-    const key = getSecretKey();
-    const [ivHex, encryptedText] = encryptedCPF.split(':');
+    const parts = encryptedCPF.split(':');
+    
+    if (parts.length !== 2) {
+        throw new Error(`Formato de CPF criptografado inválido. Esperado "IV:Texto", mas recebeu: "${encryptedCPF}"`);
+    }
+
+    const [ivHex, encryptedText] = parts;
     const iv = Buffer.from(ivHex, 'hex');
+
+    if (iv.length !== 16) {
+        throw new Error(`IV inválido: tamanho esperado de 16 bytes, mas recebeu ${iv.length} bytes (hex: "${ivHex}")`);
+    }
+
+    const key = getSecretKey();
     const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
     
     let decrypted = decipher.update(encryptedText, 'hex', 'utf8');

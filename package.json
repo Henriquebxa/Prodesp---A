@@ -1,12 +1,14 @@
 {
   "devDependencies": {
     "@types/node": "^25.9.1",
-    "prisma": "^6.19.3"
+    "prisma": "^6.12.0"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.3"
   }
 }
