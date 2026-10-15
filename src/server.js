@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import path from 'path'; 
 import cors from 'cors';
+import { rateLimiter } from './middlewares/ratelimiter.js';
 import cookieParser from 'cookie-parser';
 import { fileURLToPath } from 'url';
 import authRoutes from './routes/authRoutes.js';
@@ -20,6 +21,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
+app.use(rateLimiter(10, 60));
 app.use(authRoutes);
 
 app.get('/', (req, res) => {

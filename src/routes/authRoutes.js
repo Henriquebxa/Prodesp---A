@@ -7,6 +7,57 @@ import { encryptCPF, decryptCPF } from '../lib/cryptoUtils.js';
 
 const router = Router();
 
+function validarCPF(cpf) {
+    if (!cpf) return false;
+    const cleanCPF = String(cpf).replace(/\D/g, '');
+
+    if (cleanCPF.length !== 11 || /^(\d)\1{10}$/.test(cleanCPF)) {
+        return false;
+    }
+
+    let soma = 0;
+    for (let i = 0; i < 9; i++) {
+        soma += parseInt(cleanCPF.charAt(i)) * (10 - i);
+    }
+    let resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cleanCPF.charAt(9))) return false;
+
+    soma = 0;
+    for (let i = 0; i < 10; i++) {
+        soma += parseInt(cleanCPF.charAt(i)) * (11 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cleanCPF.charAt(10))) return false;
+
+    return true;
+}
+
+const USUARIOS_EXCECAO = ['Prodespadmin'];
+
+function validarCPFMiddleware(req, res, next) {
+    const { username, cpf } = req.body;
+
+    if (!cpf) {
+        return res.status(400).json({ error: 'CPF é obrigatório.' });
+    }
+
+    const cleanCPF = String(cpf).replace(/\D/g, '');
+
+    const isExcecao = username && USUARIOS_EXCECAO.some(
+        user => user.toLowerCase() === String(username).trim().toLowerCase()
+    );
+
+    if (!isExcecao && !validarCPF(cleanCPF)) {
+        return res.status(400).json({ error: 'CPF inválido.' });
+    }
+
+    req.body.cpf = cleanCPF;
+    next();
+}
+
+
 const PRIVATE_KEY = process.env.JWT_PRIVATE_KEY
     ? String(process.env.JWT_PRIVATE_KEY).replace(/\\n/g, '\n')
     : undefined;
@@ -22,20 +73,17 @@ const COOKIE_OPTIONS = {
     maxAge: 15 * 60 * 1000
 };
 
-const JWT_SECRET = process.env.JWT_SECRET
 
-router.post('/registrar', async (req, res) => {
+router.post('/registrar', validarCPFMiddleware, async (req, res) => {
     const { username, cpf, password } = req.body;
 
-    if (!username || !cpf || !password) {
+    if (!username || !password) {
         return res.status(400).json({ error: 'Preencha todos os campos!' });
     }
 
-    const cleanCPF = cpf.replace(/\D/g, '');
-
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const encryptedCPF = encryptCPF(cleanCPF);
+        const encryptedCPF = encryptCPF(cpf);
 
         const newUser = await prisma.user.create({
             data: {
@@ -58,16 +106,12 @@ router.post('/registrar', async (req, res) => {
     }
 });
 
-//Daqui para baixo é o código de login, onde será implementado a autenticação do usuário.
-
-router.post('/login', async (req, res) => {
+router.post('/login', validarCPFMiddleware, async (req, res) => {
     const { username, cpf, password } = req.body;
 
-    if (!username || !cpf || !password) {
+    if (!username || !password) {
         return res.status(400).json({ error: 'Informe o usuário, CPF e a senha.' });
     }
-
-    const cleanCPF = cpf.replace(/\D/g, '');
 
     try {
         const user = await prisma.user.findFirst({
@@ -75,16 +119,36 @@ router.post('/login', async (req, res) => {
         });
 
         if (!user) {
+            console.log(`❌ Login falhou: Usuário '${username}' não encontrado.`);
             return res.status(401).json({ error: 'Credenciais inválidas.' });
         }
 
-        const decryptedUserCPF = decryptCPF(user.cpf);
-        if (decryptedUserCPF !== cleanCPF) {
+        let decryptedUserCPF = null;
+
+        if (user.cpf) {
+            if (String(user.cpf).includes(':')) {
+                try {
+                    decryptedUserCPF = decryptCPF(user.cpf);
+                } catch (cryptoErr) {
+                    console.error("❌ Erro ao descriptografar CPF do banco:", cryptoErr.message);
+                    decryptedUserCPF = null;
+                }
+            } else {
+                decryptedUserCPF = String(user.cpf).replace(/\D/g, '');
+            }
+        }
+
+        const cleanLoginCPF = String(cpf).trim().replace(/\D/g, '');
+        const cleanDbCPF = decryptedUserCPF ? String(decryptedUserCPF).trim().replace(/\D/g, '') : null;
+
+        if (!cleanDbCPF || cleanDbCPF !== cleanLoginCPF) {
+            console.log('❌ Falha na comparação do CPF.');
             return res.status(401).json({ error: 'Credenciais inválidas.' });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
+            console.log('❌ Falha na verificação de senha.');
             return res.status(401).json({ error: 'Credenciais inválidas.' });
         }
 
@@ -127,8 +191,6 @@ export function authenticateToken(req, res, next) {
         next();
     });
 }
-
-//rota de logout
 
 router.post('/logout', (req, res) => {
     res.clearCookie('token', COOKIE_OPTIONS);

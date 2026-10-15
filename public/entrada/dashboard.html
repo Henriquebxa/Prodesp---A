@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PRODESP — Gestão de Editais e Contratos</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Estilos e Ícones Lucide -->
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@0.441.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- APP SHELL / CONTAINER PRINCIPAL -->
+  <div id="app" class="app-layout" data-sidebar-state="expanded">
+
+    <!-- BARRA LATERAL (SIDEBAR COMPONENT) -->
+    <aside class="sidebar" id="main-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-box">
+          <span class="logo-symbol">P</span>
+        </div>
+        <div class="logo-text">
+          <span class="brand-name">PRODESP</span>
+          <span class="brand-sub">Portal de Editais</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-page="dashboard" title="Dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span class="sidebar-text">Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-page="editais" title="Editais">
+          <i data-lucide="file-text"></i>
+          <span class="sidebar-text">Editais</span>
+        </a>
+        <a href="#" class="nav-item" data-page="propostas" title="Propostas">
+          <i data-lucide="clipboard-list"></i>
+          <span class="sidebar-text">Propostas</span>
+        </a>
+        <a href="#" class="nav-item" data-page="pareceres" title="Pareceres Jurídicos">
+          <i data-lucide="shield"></i>
+          <span class="sidebar-text">Pareceres Jurídicos</span>
+        </a>
+        <a href="#" class="nav-item" data-page="relatorios" title="Relatórios">
+          <i data-lucide="bar-chart-2"></i>
+          <span class="sidebar-text">Relatórios</span>
+        </a>
+        <a href="#" class="nav-item" data-page="admin" title="Gestão de Usuários">
+          <i data-lucide="users"></i>
+          <span class="sidebar-text">Gestão de Usuários</span>
+        </a>
+      </nav>
+
+      <div class="ui-separator my-2"></div>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="ui-avatar">
+            <span class="ui-avatar-fallback" id="sidebar-avatar">CE</span>
+          </div>
+          <div class="user-info sidebar-text">
+            <span class="user-name" id="sidebar-name">Carlos Eduardo</span>
+            <span class="user-role" id="sidebar-dept">Diretoria de TI</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL (MAIN WRAPPER) -->
+    <main class="main-wrapper">
+
+      <!-- MENUBAR -->
+      <div class="ui-menubar">
+        <div class="ui-menubar-menu">
+          <button class="ui-menubar-trigger" onclick="toggleMenubar('mb-arquivo')">Arquivo</button>
+          <div class="ui-menubar-content" id="mb-arquivo">
+            <div class="ui-menubar-item" onclick="openFormModal('novo_edital')"><i data-lucide="plus"></i> Novo Edital <span class="ui-menubar-shortcut">Ctrl+N</span></div>
+            <div class="ui-menubar-item" onclick="exportData()"><i data-lucide="download"></i> Exportar Dados <span class="ui-menubar-shortcut">Ctrl+E</span></div>
+            <div class="ui-menubar-separator"></div>
+            <div class="ui-menubar-item text-danger" onclick="openAlertDialog('Sair', 'Encerrar sessão?', () => showToast('Sessão encerrada.'))">Sair</div>
+          </div>
+        </div>
+
+        <div class="ui-menubar-menu">
+          <button class="ui-menubar-trigger" onclick="toggleMenubar('mb-exibir')">Exibir</button>
+          <div class="ui-menubar-content" id="mb-exibir">
+            <div class="ui-menubar-item" onclick="toggleSidebar()"><i data-lucide="panel-left"></i> Alternar Sidebar (Ctrl+B)</div>
+            <div class="ui-menubar-item" onclick="toggleSheet('sheet-filtros', true)"><i data-lucide="sliders"></i> Painel de Filtros (Sheet)</div>
+          </div>
+        </div>
+
+        <div class="ui-menubar-menu">
+          <button class="ui-menubar-trigger" onclick="toggleMenubar('mb-ajuda')">Ajuda</button>
+          <div class="ui-menubar-content" id="mb-ajuda">
+            <div class="ui-menubar-item" onclick="showToast('Documentação do Sistema PRODESP')"><i data-lucide="help-circle"></i> Documentação</div>
+            <div class="ui-menubar-item" onclick="togglePopover(event, 'popover-suporte')"><i data-lucide="life-buoy"></i> Contato Suporte</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CABEÇALHO SUPERIOR (TOPBAR) -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn" onclick="toggleSidebar()" data-tooltip="Recolher/Expandir Menu (Ctrl+B)">
+            <i data-lucide="panel-left"></i>
+          </button>
+
+          <!-- NAVIGATION MENU -->
+          <nav class="ui-navigation-menu">
+            <ul class="ui-navigation-menu-list">
+              <li class="ui-navigation-menu-item">
+                <button class="ui-navigation-menu-trigger" onclick="toggleNavMenu('nav-m-atalhos')">Módulos Rápidos <i data-lucide="chevron-down"></i></button>
+                <div class="ui-navigation-menu-content" id="nav-m-atalhos">
+                  <a href="#" class="ui-navigation-menu-link" onclick="navigateTo('editais')">
+                    <strong>Módulo de Editais</strong>
+                    <span>Cadastramento e publicação de licitações públicas</span>
+                  </a>
+                  <a href="#" class="ui-navigation-menu-link" onclick="navigateTo('propostas')">
+                    <strong>Triagem de Propostas</strong>
+                    <span>Análise comercial e técnica dos fornecedores</span>
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </nav>
+
+          <!-- COMMAND PALETTE TRIGGER -->
+          <button class="ui-command-trigger-btn" onclick="openCommandPalette()">
+            <i data-lucide="search"></i>
+            <span>Buscar no sistema... (Ctrl + K)</span>
+            <kbd>⌘K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar-right">
+          <!-- SELECT CUSTOMIZADO -->
+          <div class="ui-select-wrapper">
+            <button class="ui-select-trigger" onclick="toggleSelect('select-perfil-content')">
+              <span id="select-perfil-value">Administrador</span>
+              <i data-lucide="chevron-down" class="size-4 opacity-50"></i>
+            </button>
+            <div class="ui-select-content" id="select-perfil-content">
+              <div class="ui-select-label">Perfil de Acesso</div>
+              <div class="ui-select-item" onclick="selectProfile('admin', 'Administrador')">Administrador</div>
+              <div class="ui-select-item" onclick="selectProfile('gestor', 'Gestor')">Gestor</div>
+              <div class="ui-select-item" onclick="selectProfile('analista', 'Analista')">Analista</div>
+              <div class="ui-select-item" onclick="selectProfile('visualizador', 'Visualizador')">Visualizador</div>
+              <div class="ui-select-item" onclick="selectProfile('juridico', 'Revisor Jurídico')">Revisor Jurídico</div>
+            </div>
+          </div>
+
+          <!-- NOTIFICAÇÕES (COM TOOLTIP) -->
+          <button class="icon-btn" onclick="togglePopover(event, 'popover-notificacoes')" data-tooltip="Notificações Recentes">
+            <i data-lucide="bell"></i>
+            <span class="badge-dot"></span>
+          </button>
+
+          <!-- SHEET TRIGGER -->
+          <button class="icon-btn" data-tooltip="Filtros Avançados (Sheet)" onclick="toggleSheet('sheet-filtros', true)">
+            <i data-lucide="sliders"></i>
+          </button>
+
+          <button class="icon-btn text-danger" data-tooltip="Sair do Sistema" onclick="openAlertDialog('Encerrar Sessão', 'Deseja realmente sair da sua conta?', () => showToast('Sessão encerrada com sucesso.'))">
+            <i data-lucide="log-out"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- ÁREA DINÂMICA DE CONTEÚDO -->
+      <section class="content-body">
+        
+        <!-- BREADCRUMB -->
+        <nav class="ui-breadcrumb" aria-label="breadcrumb">
+          <ol class="ui-breadcrumb-list">
+            <li class="ui-breadcrumb-item">
+              <a href="#" class="ui-breadcrumb-link" onclick="navigateTo('dashboard')">Início</a>
+            </li>
+            <li class="ui-breadcrumb-separator"><i data-lucide="chevron-right"></i></li>
+            <li class="ui-breadcrumb-item">
+              <span class="ui-breadcrumb-page" id="breadcrumb-current-page">Dashboard</span>
+            </li>
+          </ol>
+        </nav>
+
+        <!-- ALERT -->
+        <div class="ui-alert ui-alert-default mb-4" id="system-alert">
+          <i data-lucide="info"></i>
+          <div class="ui-alert-content">
+            <div class="ui-alert-title">Aviso de Manutenção Programada</div>
+            <div class="ui-alert-description">
+              O módulo de homologação passará por manutenção neste fim de semana. Planeje suas submissões com antecedência.
+            </div>
+          </div>
+        </div>
+
+        <!-- PÁGINA: DASHBOARD -->
+        <div id="page-dashboard" class="page-content active">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Visão Geral do Sistema</h1>
+              <p class="page-subtitle">Acompanhamento e gestão unificada de processos licitatórios.</p>
+            </div>
+            <div class="header-actions">
+              <!-- TOGGLE GROUP (MODO DE VISUALIZAÇÃO) -->
+              <div class="ui-toggle-group">
+                <button class="ui-toggle-group-item active" data-tooltip="Visão em Grid" onclick="switchViewMode('grid', this)">
+                  <i data-lucide="grid"></i>
+                </button>
+                <button class="ui-toggle-group-item" data-tooltip="Visão Compacta" onclick="switchViewMode('compact', this)">
+                  <i data-lucide="list"></i>
+                </button>
+              </div>
+
+              <button class="ui-button ui-button-outline" onclick="exportData()">
+                <i data-lucide="download"></i> Exportar
+              </button>
+              <button class="ui-button ui-button-default" onclick="openFormModal('novo_edital')">
+                <i data-lucide="plus"></i> Novo Edital
+              </button>
+            </div>
+          </div>
+
+          <!-- KPIS SUPERIORES -->
+          <div class="kpi-grid" id="kpi-container">
+            <!-- Renderizado via JS -->
+          </div>
+
+          <!-- RESIZABLE PANEL GROUP -->
+          <div class="ui-resizable-group mb-4" id="resizable-dashboard-layout">
+            
+            <div class="ui-resizable-panel" id="panel-left" style="flex: 60%;">
+              <div class="ui-card h-full">
+                <div class="ui-card-header">
+                  <h3 class="ui-card-title">Destaques e Comunicados Oficiais</h3>
+                </div>
+                <div class="ui-card-content">
+                  <div class="ui-carousel" id="official-carousel">
+                    <div class="ui-carousel-viewport">
+                      <div class="ui-carousel-container" id="carousel-slides">
+                        <div class="ui-carousel-slide">
+                          <div class="carousel-banner-item bg-light-purple">
+                            <h4>Nova Lei de Licitações (Lei 14.133/21)</h4>
+                            <p>Todos os editais abertos a partir deste mês seguem rigorosamente as diretrizes atualizadas do Estado de SP.</p>
+                          </div>
+                        </div>
+                        <div class="ui-carousel-slide">
+                          <div class="carousel-banner-item bg-light-green">
+                            <h4>Certificação Digital Obrigatória</h4>
+                            <p>Lembre-se de renovar seus certificados e-CPF e e-CNPJ junto à autoridade certificadora antes das sessões públicas.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="ui-carousel-btn prev" onclick="moveCarousel(-1)"><i data-lucide="arrow-left"></i></button>
+                    <button class="ui-carousel-btn next" onclick="moveCarousel(1)"><i data-lucide="arrow-right"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-resizable-handle" onmousedown="initResize(event, 'panel-left', 'panel-right')">
+              <div class="ui-resizable-handle-icon"><i data-lucide="grip-vertical"></i></div>
+            </div>
+
+            <div class="ui-resizable-panel" id="panel-right" style="flex: 40%;">
+              <div class="ui-card h-full" data-card-id="calendario">
+                <div class="ui-card-header">
+                  <h3 class="ui-card-title">Agenda de Licitações</h3>
+                </div>
+                <div class="ui-scroll-area" style="max-height: 180px;">
+                  <div class="ui-scroll-area-viewport p-4">
+                    <div class="ui-calendar-days-grid" id="calendar-days">
+                      <!-- Renderizado via JS -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- GRID PRINCIPAL DE CARDS / MÓDULOS -->
+          <div class="dashboard-grid" id="cards-container">
+            
+            <!-- EDITAIS EM ANDAMENTO (COM TABS E TABLE COMPONENT) -->
+            <div class="ui-card card-wide" data-card-id="editais_andamento">
+              <div class="ui-card-header">
+                <div>
+                  <h3 class="ui-card-title">Editais em Andamento</h3>
+                  <p class="ui-card-description">Passe o mouse sobre o código para Hover Card ou clique com botão direito para Context Menu</p>
+                </div>
+
+                <!-- COMPONENTE: TABS -->
+                <div class="ui-tabs">
+                  <div class="ui-tabs-list">
+                    <button class="ui-tabs-trigger active" onclick="switchTab('tab-todos', this)">Todos</button>
+                    <button class="ui-tabs-trigger" onclick="switchTab('tab-urgentes', this)">Urgentes</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-card-content p-0">
+                <!-- TAB CONTENT 1: TODOS -->
+                <div class="ui-tabs-content active" id="tab-todos">
+                  <div class="ui-table-container">
+                    <table class="ui-table">
+                      <thead class="ui-table-header">
+                        <tr class="ui-table-row">
+                          <th class="ui-table-head">Nº Edital</th>
+                          <th class="ui-table-head">Título / Órgão</th>
+                          <th class="ui-table-head">Status / Progresso</th>
+                          <th class="ui-table-head">Valor Est.</th>
+                          <th class="ui-table-head">Prazo</th>
+                          <th class="ui-table-head">Propostas</th>
+                        </tr>
+                      </thead>
+                      <tbody class="ui-table-body" id="tbl-editais-andamento">
+                        <!-- JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- TAB CONTENT 2: URGENTES -->
+                <div class="ui-tabs-content" id="tab-urgentes">
+                  <div class="p-4 text-center text-muted">
+                    Exibindo apenas editais com prazo inferior a 15 dias.
+                  </div>
+                </div>
+
+                <!-- PAGINATION -->
+                <div class="p-4 border-t flex justify-center">
+                  <nav class="ui-pagination">
+                    <ul class="ui-pagination-content">
+                      <li class="ui-pagination-item"><a class="ui-pagination-link" href="#" onclick="changePage(1)">1</a></li>
+                      <li class="ui-pagination-item"><a class="ui-pagination-link active" href="#" onclick="changePage(2)">2</a></li>
+                      <li class="ui-pagination-item"><a class="ui-pagination-link" href="#" onclick="changePage(3)">3</a></li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+
+            <!-- PROPOSTAS EM ANÁLISE -->
+            <div class="ui-card" data-card-id="propostas_analise">
+              <div class="ui-card-header">
+                <div>
+                  <h3 class="ui-card-title">Propostas em Análise</h3>
+                  <p class="ui-card-description">Distribuição de qualificações técnicas</p>
+                </div>
+              </div>
+              <div class="ui-card-content">
+                <div class="propostas-summary">
+                  <div class="pie-chart-mock">
+                    <div class="pie-center">87</div>
+                  </div>
+                  <div class="legend-list">
+                    <div class="legend-item"><span class="dot bg-success"></span> Aprovadas (45%)</div>
+                    <div class="legend-item"><span class="dot bg-primary"></span> Em Análise (30%)</div>
+                    <div class="legend-item"><span class="dot bg-warning"></span> Pendentes (15%)</div>
+                    <div class="legend-item"><span class="dot bg-danger"></span> Reprovadas (10%)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DIRETRILZES / ACCORDION -->
+            <div class="ui-card" data-card-id="pendencias">
+              <div class="ui-card-header">
+                <div>
+                  <h3 class="ui-card-title">Diretrizes & Requisitos Frequentes</h3>
+                  <p class="ui-card-description">Base de consulta técnica de processos</p>
+                </div>
+              </div>
+              <div class="ui-card-content">
+                <div class="ui-collapsible-wrapper">
+                  <div class="ui-collapsible-item">
+                    <button class="ui-collapsible-trigger" onclick="toggleCollapsible(this)">
+                      <span>Prazos de Impugnação de Edital</span>
+                      <i data-lucide="chevron-down" class="ui-collapsible-icon"></i>
+                    </button>
+                    <div class="ui-collapsible-content">
+                      Até 3 (três) dias úteis antes da data fixada para a abertura dos envelopes de habilitação.
+                    </div>
+                  </div>
+                  <div class="ui-collapsible-item">
+                    <button class="ui-collapsible-trigger" onclick="toggleCollapsible(this)">
+                      <span>Requisitos de Assinatura ICP-Brasil</span>
+                      <i data-lucide="chevron-down" class="ui-collapsible-icon"></i>
+                    </button>
+                    <div class="ui-collapsible-content">
+                      Todas as declarações financeiras e propostas comerciais demandam validação via certificado e-CPF/e-CNPJ.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- GRÁFICO INTERATIVO -->
+            <div class="ui-card" data-card-id="indicadores">
+              <div class="ui-card-header">
+                <div>
+                  <h3 class="ui-card-title">Indicadores de Desempenho</h3>
+                  <p class="ui-card-description">Evolução de Editais x Propostas</p>
+                </div>
+              </div>
+              <div class="ui-card-content">
+                <div class="ui-chart-container" id="bar-chart-container">
+                  <!-- JS Rendered Chart -->
+                </div>
+              </div>
+            </div>
+
+            <!-- PARECERES JURÍDICOS -->
+            <div class="ui-card card-wide" data-card-id="pareceres">
+              <div class="ui-card-header">
+                <div>
+                  <h3 class="ui-card-title">Pareceres Jurídicos</h3>
+                  <p class="ui-card-description">Análises e manifestações legais da assessoria</p>
+                </div>
+              </div>
+              <div class="ui-card-content p-0">
+                <div class="ui-table-container">
+                  <table class="ui-table">
+                    <thead class="ui-table-header">
+                      <tr class="ui-table-row">
+                        <th class="ui-table-head">Edital</th>
+                        <th class="ui-table-head">Assunto</th>
+                        <th class="ui-table-head">Status</th>
+                        <th class="ui-table-head">Prazo</th>
+                      </tr>
+                    </thead>
+                    <tbody class="ui-table-body" id="tbl-pareceres">
+                      <!-- JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- GESTÃO DE USUÁRIOS (ADMIN) -->
+            <div class="ui-card card-wide" data-card-id="gestao_usuarios">
+              <div class="ui-card-header">
+                <div>
+                  <h3 class="ui-card-title">Gestão de Usuários</h3>
+                  <p class="ui-card-description">Controle de acessos e permissões do sistema</p>
+                </div>
+                <div class="ui-card-action">
+                  <button class="ui-button ui-button-default ui-button-sm" onclick="openFormModal('novo_usuario')">
+                    <i data-lucide="plus"></i> Novo Usuário
+                  </button>
+                </div>
+              </div>
+              <div class="ui-card-content p-0">
+                <div class="ui-table-container">
+                  <table class="ui-table">
+                    <thead class="ui-table-header">
+                      <tr class="ui-table-row">
+                        <th class="ui-table-head">Usuário</th>
+                        <th class="ui-table-head">Departamento</th>
+                        <th class="ui-table-head">Perfil</th>
+                        <th class="ui-table-head">Status</th>
+                        <th class="ui-table-head">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody class="ui-table-body" id="tbl-usuarios">
+                      <!-- JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        
+
+      </section>
+    </main>
+  </div>
+
+  <!-- SHEET (FILTROS) -->
+  <div class="ui-sheet-overlay" id="sheet-filtros-backdrop" onclick="toggleSheet('sheet-filtros', false)">
+    <div class="ui-sheet-content" onclick="event.stopPropagation()">
+      <div class="ui-sheet-header">
+        <h3 class="ui-sheet-title">Filtros Avançados e Configurações</h3>
+        <p class="ui-sheet-description">Ajuste os parâmetros de busca e preferências do portal.</p>
+        <button class="modal-close" onclick="toggleSheet('sheet-filtros', false)"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="ui-sheet-body">
+        
+        <div class="flex items-center justify-between mb-4">
+          <label class="font-medium text-sm">Notificações por E-mail</label>
+          <label class="ui-switch">
+            <input type="checkbox" checked onchange="showToast('Preferência de e-mail atualizada')" />
+            <span class="ui-switch-thumb"></span>
+          </label>
+        </div>
+
+        <div class="ui-separator my-4"></div>
+
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-2">
+            <label class="font-medium">Valor Máximo do Edital</label>
+            <span id="slider-value-display" class="font-bold text-primary">R$ 5.000.000</span>
+          </div>
+          <input type="range" class="ui-slider" min="100000" max="10000000" step="100000" value="5000000" oninput="updateSliderDisplay(this.value)" />
+        </div>
+
+        <div class="ui-separator my-4"></div>
+
+        <!-- COMPONENTE: TEXTAREA -->
+        <div class="mb-4">
+          <label class="font-medium text-sm block mb-1">Observações de Triagem</label>
+          <textarea class="ui-textarea" placeholder="Insira aqui notas sobre a análise técnica..."></textarea>
+        </div>
+
+      </div>
+
+      <div class="ui-sheet-footer">
+        <button class="ui-button ui-button-outline" onclick="toggleSheet('sheet-filtros', false)">Cancelar</button>
+        <button class="ui-button ui-button-default" onclick="toggleSheet('sheet-filtros', false); showToast('Filtros aplicados!')">Aplicar Filtros</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOVER CARD POPUP -->
+  <div class="ui-hover-card" id="hover-card-popup">
+    <div class="hover-card-header">
+      <strong id="hover-card-title">Edital 001/2026</strong>
+      <span class="ui-badge ui-badge-success" id="hover-card-badge">SEFAZ</span>
+    </div>
+    <div class="hover-card-body">
+      <p id="hover-card-desc">Aquisição e implantação de infraestrutura técnica de servidor cloud de alto desempenho.</p>
+    </div>
+  </div>
+
+  <!-- POPOVERS -->
+  <div class="ui-popover" id="popover-notificacoes">
+    <div class="popover-title">Notificações Recentes</div>
+    <p class="text-muted text-xs mb-2">3 avisos pendentes de leitura</p>
+    <div class="ui-menubar-separator mb-2"></div>
+    <button class="ui-button ui-button-sm ui-button-default w-full" onclick="showToast('Notificações atualizadas')">Limpar Todas</button>
+  </div>
+
+  <div class="ui-popover" id="popover-suporte">
+    <div class="popover-title">Atendimento PRODESP</div>
+    <p class="text-muted text-xs mb-2">Central de Ajuda Técnica: 0800-019-2000</p>
+    <p class="text-muted text-xs mb-2">E-mail: suporte.editais@prodesp.sp.gov.br</p>
+  </div>
+
+  <!-- COMMAND PALETTE MODAL -->
+  <div class="modal-backdrop" id="command-modal-backdrop">
+    <div class="ui-command-box">
+      <div class="ui-command-input-wrapper">
+        <i data-lucide="search"></i>
+        <input type="text" id="command-input" placeholder="Digite um comando ou busque no sistema..." oninput="filterCommandItems(this.value)" />
+      </div>
+      <div class="ui-command-list" id="command-list">
+        <div class="ui-command-group-label">Navegação</div>
+        <div class="ui-command-item" onclick="execCommand(() => navigateTo('dashboard'))"><i data-lucide="layout-dashboard"></i> Ir para o Dashboard</div>
+        <div class="ui-command-item" onclick="execCommand(() => navigateTo('editais'))"><i data-lucide="file-text"></i> Ir para Editais</div>
+        
+        <div class="ui-command-group-label">Ações</div>
+        <div class="ui-command-item" onclick="execCommand(() => openFormModal('novo_edital'))"><i data-lucide="plus"></i> Criar Novo Edital</div>
+        <div class="ui-command-item" onclick="execCommand(() => exportData())"><i data-lucide="download"></i> Exportar Relatório</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTEXT MENU -->
+  <div class="ui-context-menu" id="context-menu">
+    <div class="ui-context-menu-item" onclick="execContextMenuAction('Visualizar Detalhes')"><i data-lucide="eye"></i> Visualizar Detalhes</div>
+    <div class="ui-context-menu-item" onclick="execContextMenuAction('Baixar Minuta PDF')"><i data-lucide="file-down"></i> Baixar Minuta (PDF)</div>
+    <div class="ui-context-menu-separator"></div>
+    <div class="ui-context-menu-item text-danger" onclick="execContextMenuAction('Solicitar Impugnação')"><i data-lucide="alert-triangle"></i> Impugnar Edital</div>
+  </div>
+
+  <!-- MODAL DE FORMULÁRIOS -->
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Formulário</h3>
+        <button class="modal-close" onclick="closeModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- JS Dyn Form -->
+      </div>
+      <div class="modal-footer" id="modal-footer">
+        <button class="ui-button ui-button-outline" onclick="closeModal()">Cancelar</button>
+        <button class="ui-button ui-button-default" id="modal-submit-btn" onclick="submitModal()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALERT DIALOG DE CONFIRMAÇÃO -->
+  <div class="modal-backdrop" id="alert-dialog-backdrop">
+    <div class="ui-alert-dialog-box">
+      <div class="ui-alert-dialog-header">
+        <h3 class="ui-alert-dialog-title" id="alert-dialog-title">Confirmação</h3>
+        <p class="ui-alert-dialog-description" id="alert-dialog-description">Deseja prosseguir?</p>
+      </div>
+      <div class="ui-alert-dialog-footer">
+        <button class="ui-button ui-button-outline" onclick="closeAlertDialog()">Cancelar</button>
+        <button class="ui-button ui-button-destructive" id="alert-dialog-confirm-btn">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLTIP FLUTUANTE GLOBAL -->
+  <div class="ui-tooltip" id="global-tooltip"></div>
+
+  <!-- TOASTER / SONNER -->
+  <div id="toast-container" class="ui-sonner-toaster"></div>
+
+  <!-- SCRIPTS -->
+  <script src="app.js"></script>
+  <script src="pages.js"></script>
+</body>
+</html>
