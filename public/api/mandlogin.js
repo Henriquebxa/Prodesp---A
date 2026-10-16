@@ -33,10 +33,35 @@ document.querySelector('form').addEventListener('submit', async (event) => {
     try {
         const resultado = await fazerLogin({ username, cpf: cpfLimpo, password });
         
+        // Guarda o usuário (com o cargo vindo do servidor) para o dashboard montar o perfil
+        localStorage.setItem('prodesp_user', JSON.stringify(resultado.user));
+
         alert(resultado.message || 'Login realizado com sucesso!');
         window.location.href = '../entrada/dashboard.html'; 
 
     } catch (error) {
         alert(error.message);
     }
+});
+
+export function setupPasswordToggle(toggleButtonId, passwordInputId) {
+    const toggleBtn = document.getElementById(toggleButtonId);
+    const passwordInput = document.getElementById(passwordInputId);
+
+    if (toggleBtn && passwordInput) {
+        toggleBtn.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.innerHTML = '<img src="../imgs/Esconder_senha.png" alt="Esconder senha">'; 
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.innerHTML = '<img src="../imgs/Mostrar_senha.png" alt="Mostrar senha">'; 
+            }
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupPasswordToggle('toggle-password', 'password');
+    setupPasswordToggle('toggle-confirm-password', 'confirm-password');
 });

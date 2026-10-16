@@ -3,6 +3,7 @@
   const fd = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toLocaleDateString("pt-BR"); };
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const $ = (id) => document.getElementById(id);
+  const API_URL = 'http://localhost:3333';
 
   const BADGE = {
     em_andamento: ["default", "Em Andamento"], publicado: ["success", "Publicado"], em_analise: ["warning", "Em Análise"],
@@ -13,7 +14,7 @@
   const badge = (s) => { const [c, l] = BADGE[s] || ["secondary", s]; return `<span class="ui-badge ui-badge-${c}">${l}</span>`; };
   const em_analise_prop = (s) => (s === "em_analise" ? `<span class="ui-badge ui-badge-default">Em Análise</span>` : badge(s));
 
-  // ── Dados (mesmos mocks do App.tsx) ──
+  // ── Dados principais ──
   const D = {
     editais: [
       { id: "001/2026", titulo: "Aquisição de Infraestrutura de TI", status: "em_andamento", valor: "R$ 2.450.000", prazo: fd(19), propostas: 7, orgao: "SEFAZ", modalidade: "Pregão Eletrônico" },
@@ -54,14 +55,7 @@
       { id: 3, titulo: "Indicadores de Desempenho — Semestre 1", data: fd(-58), tipo: "Semestral", tamanho: "6.8 MB" },
       { id: 4, titulo: "Auditoria de Contratos — Junho/2026", data: fd(-53), tipo: "Auditoria", tamanho: "1.9 MB" },
     ],
-    usuarios: [
-      { id: 1, nome: "Carlos Eduardo Santos", email: "c.santos@prodesp.sp.gov.br", perfil: "Administrador", dept: "Dir. de TI", status: "ativo", acesso: "Hoje, 09:42" },
-      { id: 2, nome: "Ana Paula Ferreira", email: "a.ferreira@prodesp.sp.gov.br", perfil: "Gestor", dept: "Gestão de Contratos", status: "ativo", acesso: "Hoje, 08:15" },
-      { id: 3, nome: "Roberto Alves", email: "r.alves@prodesp.sp.gov.br", perfil: "Analista", dept: "Análise Técnica", status: "ativo", acesso: "Ontem, 16:30" },
-      { id: 4, nome: "Mariana Costa", email: "m.costa@prodesp.sp.gov.br", perfil: "Visualizador", dept: "Consultoria", status: "ativo", acesso: fd(-15) },
-      { id: 5, nome: "Paulo Rodrigues", email: "p.rodrigues@prodesp.sp.gov.br", perfil: "Analista", dept: "Análise Técnica", status: "inativo", acesso: fd(-22) },
-      { id: 6, nome: "Fernanda Rocha", email: "juridico@prodesp.sp.gov.br", perfil: "Revisor Jurídico", dept: "Assessoria Jurídica", status: "ativo", acesso: "Hoje, 07:55" },
-    ],
+    usuarios: [], // Carregado dinamicamente do banco
     audit: [
       ["Login realizado", "Carlos Eduardo Santos", "Administrador", "10.1.0.45", "Hoje, 09:42"],
       ["Edital 005/2026 publicado", "Ana Paula Ferreira", "Gestor", "10.1.0.82", "Hoje, 08:30"],
@@ -78,6 +72,7 @@
       ["Modo de manutenção", "Bloquear acesso de usuários não-admin", false],
     ],
   };
+
   const ALL = ["admin", "gestor", "analista", "visualizador", "juridico"];
   const NAV = [
     ["dashboard", "Dashboard", "layout-dashboard", ALL, "Dashboard"],
@@ -90,6 +85,58 @@
   ];
   const can = (id) => (NAV.find((n) => n[0] === id) || [, , , ALL])[3].includes(currentProfile);
   const nextId = (arr, p) => `${p}${String(arr.length + 1).padStart(arr === D.editais ? 3 : 4, "0")}`;
+
+  // ── Função para buscar usuários reais do banco ──
+  async function carregarUsuariosDoBanco() {
+    try {
+      const res = await fetch(`${API_URL}/usuarios`, { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        D.usuarios = data.map(u => {
+          const nomeLower = String(u.username).trim().toLowerCase();
+          // Força o usuário Prodespadmin a ter cargo de Administrador
+          const perfilDefinitivo = nomeLower === 'prodespadmin' ? 'Administrador' : (u.role || 'Visualizador');
+          
+          return {
+            id: u.id,
+            nome: u.username,
+            email: `${nomeLower}@prodesp.sp.gov.br`,
+            perfil: perfilDefinitivo,
+            dept: u.department || 'Geral',
+            status: u.status || 'ativo',
+            acesso: u.updatedAt ? new Date(u.updatedAt).toLocaleDateString("pt-BR") : 'Ativo'
+          };
+        });
+        syncDashboardData();
+      }
+    } catch (err) {
+      console.error("Erro ao carregar usuários do backend:", err);
+    }
+  }
+
+  // ── Função para atualizar o usuário no backend via PUT ──
+  async function atualizarUsuarioNoBanco(id, dados) {
+    try {
+      const res = await fetch(`${API_URL}/usuarios/${id}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: dados.nome,
+          role: dados.perfil,
+          department: dados.dept,
+          status: dados.status || 'ativo'
+        })
+      });
+      if (!res.ok) throw new Error('Falha ao atualizar no banco');
+      showToast("Usuário atualizado no banco com sucesso!");
+      await carregarUsuariosDoBanco();
+      refresh();
+    } catch (err) {
+      console.error(err);
+      showToast("Erro ao salvar alterações no banco.");
+    }
+  }
 
   // ── Utilidades de UI ──
   function download(name, content) {
@@ -253,8 +300,15 @@
     admin: {
       list: () => D.usuarios,
       menu: (u) => [
-        { l: "Editar", fn: () => formModal("Editar Usuário", [{ name: "nome", label: "Nome", required: true, value: u.nome }, { name: "perfil", label: "Perfil", type: "select", half: true, options: ["Administrador", "Gestor", "Analista", "Visualizador", "Revisor Jurídico"], value: u.perfil }, { name: "dept", label: "Departamento", half: true, value: u.dept }], (v) => upd(D.usuarios, u.id, v, "Usuário atualizado.")) },
-        { l: u.status === "ativo" ? "Inativar" : "Ativar", fn: () => upd(D.usuarios, u.id, { status: u.status === "ativo" ? "inativo" : "ativo" }, "Status alterado.") },
+        { 
+          l: "Editar", 
+          fn: () => formModal("Editar Usuário", [
+            { name: "nome", label: "Nome", required: true, value: u.nome }, 
+            { name: "perfil", label: "Perfil", type: "select", half: true, options: ["Administrador", "Gestor", "Analista", "Visualizador", "Revisor Jurídico"], value: u.perfil }, 
+            { name: "dept", label: "Departamento", half: true, value: u.dept }
+          ], (v) => atualizarUsuarioNoBanco(u.id, v)) 
+        },
+        { l: u.status === "ativo" ? "Inativar" : "Ativar", fn: () => atualizarUsuarioNoBanco(u.id, { ...u, status: u.status === "ativo" ? "inativo" : "ativo" }) },
         { l: "Redefinir senha", fn: () => showToast(`Link de redefinição enviado a ${u.email}.`) },
         { l: "Excluir", danger: true, fn: () => del(D.usuarios, u.id, "Usuário excluído.") },
       ],
@@ -271,9 +325,12 @@
   window.pgFilter = (id, f) => { S[id].f = f; renderPage(id); };
   window.pgSearch = (id, q) => { S[id].q = q.toLowerCase(); $("pg-tbl-" + id).innerHTML = tableHtml(id); lucide.createIcons(); };
 
-  function renderPage(id) {
+  async function renderPage(id) {
     const el = $("page-" + id); if (!el || id === "dashboard") return;
-    if (id === "admin") return renderAdmin(el);
+    if (id === "admin") {
+      await carregarUsuariosDoBanco();
+      return renderAdmin(el);
+    }
     const c = CFG[id], s = S[id] || (S[id] = { f: "todos", q: "" });
     const nb = c.newBtn && c.newBtn[2].includes(currentProfile) ? `<button class="ui-button ui-button-default" onclick="CFGNEW('${id}')"><i data-lucide="plus"></i> ${c.newBtn[0]}</button>` : "";
     el.innerHTML = `<div class="page-header"><div><h1 class="page-title">${c.title}</h1><p class="page-subtitle">${c.sub}</p></div><div class="header-actions">${nb}</div></div>
@@ -298,36 +355,44 @@
   window.D_SET = (i, on) => { D.settings[i][2] = on; showToast(`${D.settings[i][0]}: ${on ? "ativado" : "desativado"}`); };
   window.renderPage = renderPage;
 
+  // Logout real: encerra o cookie no servidor e limpa o usuário salvo
+  window.sairDoSistema = async function () {
+    try { await fetch(`${API_URL}/logout`, { method: 'POST', credentials: 'include' }); } catch (e) { console.error(e); }
+    localStorage.removeItem('prodesp_user');
+    window.location.href = '../login/login.html';
+  };
+
   // ── Navegação / perfis ──
   function buildNav() {
     $("main-sidebar").querySelector(".sidebar-nav").innerHTML = NAV.filter((n) => n[3].includes(currentProfile)).map((n) =>
       `<a href="#" class="nav-item ${n[0] === currentPage ? "active" : ""}" data-page="${n[0]}" title="${n[1]}" onclick="event.preventDefault();navigateTo('${n[0]}')"><i data-lucide="${n[2]}"></i><span class="sidebar-text">${n[1]}</span></a>`).join("");
     lucide.createIcons();
   }
-  window.navigateTo = function (id) {
+  window.navigateTo = async function (id) {
     if (!can(id)) { showToast("Seu perfil não tem acesso a esta área."); id = "dashboard"; }
     currentPage = id;
     document.querySelectorAll(".nav-item").forEach((el) => el.classList.toggle("active", el.dataset.page === id));
     document.querySelectorAll(".page-content").forEach((p) => p.classList.toggle("active", p.id === "page-" + id));
     $("breadcrumb-current-page").innerText = NAV.find((n) => n[0] === id)[4];
-    renderPage(id);
+    await renderPage(id);
   };
   const _sp = window.selectProfile;
-  window.selectProfile = function (k, l) { _sp(k, l); buildNav(); navigateTo(can(currentPage) ? currentPage : "dashboard"); };
+  window.selectProfile = async function (k, l) { _sp(k, l); buildNav(); await navigateTo(can(currentPage) ? currentPage : "dashboard"); };
 
   // Mantém as tabelas do Dashboard sincronizadas com os dados completos
   function syncDashboardData() {
     EDITAIS.length = 0; D.editais.slice(0, 5).forEach((e, i) => EDITAIS.push({ ...e, progress: [65, 90, 30, 45, 80][i] || 50, prazo: e.prazo }));
     PARECERES.length = 0; D.pareceres.forEach((p) => PARECERES.push({ id: p.id, edital: p.edital, titulo: p.titulo, status: BADGE[p.status][1], prazo: p.prazo }));
     USUARIOS.length = 0; D.usuarios.forEach((u) => USUARIOS.push(u));
-    renderDashboard();
+    if (typeof renderDashboard === 'function') renderDashboard();
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     const sec = document.querySelector(".content-body");
     NAV.slice(1).forEach((n) => { if (!$("page-" + n[0])) sec.insertAdjacentHTML("beforeend", `<div id="page-${n[0]}" class="page-content"></div>`); });
     document.body.insertAdjacentHTML("beforeend", `<div class="ui-context-menu" id="row-menu"></div>`);
     document.addEventListener("click", () => { $("row-menu").style.display = "none"; });
-    buildNav(); syncDashboardData();
+    await carregarUsuariosDoBanco();
+    buildNav();
   });
 })();

@@ -8,8 +8,12 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String
-  cpf      String @unique
-  password String
+  id         Int      @id @default(autoincrement())
+  username   String
+  cpf        String   @unique
+  password   String
+  role       String   @default("Visualizador")
+  department String   @default("Geral")
+  status     String   @default("ativo")
+  updatedAt  DateTime @updatedAt
 }

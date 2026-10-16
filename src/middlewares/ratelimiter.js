@@ -3,57 +3,49 @@ import Redis from 'ioredis';
 const redis = new Redis();
 
 /**
- * Middleware de Rate Limiting com Bloqueio Temporário
- * @param {number} limit 
- * @param {number} windowInSeconds
- * @param {number} blockDurationInSeconds
+ * Middleware para limitar tentativas erradas consecutivas no login.
+ * Bloqueia após 7 falhas consecutivas, sem afetar o cadastro (/registrar).
+ * @param {number} maxFailures 
+ * @param {number} blockDurationInSeconds 
  */
-export function rateLimiter(limit, windowInSeconds, blockDurationInSeconds = 300) {
+export function loginFailureLimiter(maxFailures = 7, blockDurationInSeconds = 300) {
   return async (req, res, next) => {
-    const clientId = req.headers['x-api-key'] || req.ip;
-    const now = Date.now();
-    const clearBefore = now - windowInSeconds * 1000;
-    const key = `rate_limit:${clientId}`;
-    const blockKey = `rate_limit:blocked:${clientId}`;
+    const clientId = req.headers['x-forwarded-for'] || req.ip;
+    const blockKey = `login:blocked:${clientId}`;
+    const failuresKey = `login:failures:${clientId}`;
 
     try {
       const blockTTL = await redis.ttl(blockKey);
       if (blockTTL > 0) {
         res.setHeader('Retry-After', blockTTL);
         return res.status(429).json({
-          error: 'Too Many Requests',
-          message: `Acesso bloqueado por excesso de tentativas. Tente novamente em ${blockTTL} segundos.`
+          error: 'Muitas Tentativas',
+          message: `Acesso temporariamente bloqueado após ${maxFailures} tentativas incorretas. Tente novamente em ${Math.ceil(blockTTL / 60)} minutos.`
         });
       }
 
-      const pipeline = redis.pipeline();
+      req.recordLoginFailure = async () => {
+        const failures = await redis.incr(failuresKey);
+        await redis.expire(failuresKey, 900);
 
-      pipeline.zremrangebyscore(key, 0, clearBefore);
-      pipeline.zadd(key, now, now.toString());
-      pipeline.zcard(key);
-      pipeline.expire(key, windowInSeconds);
+        if (failures >= maxFailures) {
+          await redis.set(blockKey, 'blocked', 'EX', blockDurationInSeconds);
+          return true;
+        }
+        return false;
+      };
 
-      const results = await pipeline.exec();
-      const requestCount = results[2][1];
-
-      res.setHeader('X-RateLimit-Limit', limit);
-      res.setHeader('X-RateLimit-Remaining', Math.max(0, limit - requestCount));
-      res.setHeader('X-RateLimit-Reset', Math.ceil((now + windowInSeconds * 1000) / 1000));
-
-      if (requestCount > limit) {
-        await redis.set(blockKey, 'blocked', 'EX', blockDurationInSeconds);
-
-        res.setHeader('Retry-After', blockDurationInSeconds);
-        return res.status(429).json({
-          error: 'Too Many Requests',
-          message: `Limite de requisições excedido. Você foi bloqueado por ${Math.ceil(blockDurationInSeconds / 60)} minutos.`
-        });
-      }
+      req.resetLoginFailures = async () => {
+        await redis.del(failuresKey);
+      };
 
       next();
     } catch (err) {
-      console.error('Erro no Rate Limiter:', err);
+      console.error('Erro no limitador de falhas de login:', err);
       next(); 
     }
   };
 }
+
+// Exportação adicional com o alias para compatibilidade caso o server.js importe rateLimiter
+export const rateLimiter = loginFailureLimiter;

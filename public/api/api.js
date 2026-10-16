@@ -8,18 +8,19 @@ export async function registrarUsuario(dadosUsuario) {
             body: JSON.stringify(dadosUsuario) 
         });
 
+        const data = await response.json().catch(() => ({}));
+
         if (!response.ok) {
-            throw new Error(`Erro no servidor (Status: ${response.status})`);
+            throw new Error(data.error || `Erro no servidor (Status: ${response.status})`);
         }
 
-        return await response.json();
+        return data;
     } catch (erro) {
         console.error("Falha ao enviar:", erro);
         throw erro;
     }
 }
 
-//login
 
 export async function fazerLogin(dadosLogin) {
     try {

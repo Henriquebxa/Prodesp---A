@@ -1,20 +1,54 @@
 // ─── DADOS E ESTADO GERAL DO SISTEMA PRODESP ───
 
-let currentProfile = "admin";
+// Leitura síncrona imediata do localStorage para evitar atrasos no carregamento
+const savedUser = JSON.parse(localStorage.getItem('prodesp_user') || 'null');
+
+let initialProfile = "visualizador";
+
+if (savedUser) {
+  const nome = String(savedUser.username || "").trim().toLowerCase();
+  
+  // LEITURA SEQUENCIAL: Se for Prodespadmin, força o perfil para admin de forma prioritária
+  if (nome === "prodespadmin") {
+    initialProfile = "admin";
+    savedUser.role = "Administrador";
+  } else if (savedUser.role === "Administrador") {
+    initialProfile = "admin";
+  } else {
+    // Todos os outros usuários novos iniciam estritamente como visualizador ou conforme definido no banco
+    const mapCargos = {
+      "Administrador": "admin",
+      "Gestor": "gestor",
+      "Analista": "analista",
+      "Visualizador": "visualizador",
+      "Revisor Jurídico": "juridico"
+    };
+    initialProfile = mapCargos[savedUser.role] || "visualizador";
+  }
+}
+
+let currentProfile = initialProfile;
 let currentPage = "dashboard";
 let alertConfirmCallback = null;
 let currentCarouselIndex = 0;
+let currentUserData = savedUser;
 
-// Configuração completa de perfis de usuário
 const PROFILES = {
-  admin: { name: "Carlos Eduardo Santos", dept: "Diretoria de TI", initials: "CE" },
-  gestor: { name: "Ana Paula Ferreira", dept: "Gestão de Contratos", initials: "AF" },
-  analista: { name: "Roberto Alves", dept: "Análise Técnica", initials: "RA" },
-  visualizador: { name: "Mariana Costa", dept: "Consultoria Externa", initials: "MC" },
-  juridico: { name: "Fernanda Rocha", dept: "Assessoria Jurídica", initials: "FR" }
+  admin: { name: "Prodespadmin", dept: "Diretoria de TI", initials: "PA", roleName: "Administrador" },
+  gestor: { name: "Ana Paula Ferreira", dept: "Gestão de Contratos", initials: "AF", roleName: "Gestor" },
+  analista: { name: "Roberto Alves", dept: "Análise Técnica", initials: "RA", roleName: "Analista" },
+  visualizador: { name: "Usuário Padrão", dept: "Geral", initials: "UP", roleName: "Visualizador" },
+  juridico: { name: "Fernanda Rocha", dept: "Assessoria Jurídica", initials: "FR", roleName: "Revisor Jurídico" }
 };
 
-// Permissão de visibilidade dos cards por perfil
+const ROLE_MAP = {
+  "Administrador": "admin",
+  "Gestor": "gestor",
+  "Analista": "analista",
+  "Visualizador": "visualizador",
+  "Revisor Jurídico": "juridico"
+};
+
 const VISIBLE_CARDS = {
   editais_andamento: ["admin", "gestor", "analista", "juridico"],
   propostas_analise: ["admin", "gestor", "analista", "juridico"],
@@ -25,7 +59,6 @@ const VISIBLE_CARDS = {
   pareceres: ["admin", "juridico"]
 };
 
-// Dados completos de KPIs
 const KPI_DATA = {
   admin: [
     { label: "Editais Ativos", value: "22", change: "+10%", up: true, icon: "file-text", color: "bg-primary" },
@@ -59,28 +92,23 @@ const KPI_DATA = {
   ]
 };
 
-// Mocks principais
 const EDITAIS = [
   { id: "001/2026", titulo: "Aquisição de Infraestrutura de TI", status: "em_andamento", valor: "R$ 2.450.000", prazo: "19 dias", propostas: 7, orgao: "SEFAZ", progress: 65 },
   { id: "002/2026", titulo: "Consultoria em Segurança da Informação", status: "publicado", valor: "R$ 890.000", prazo: "10 dias", propostas: 12, orgao: "SSP", progress: 90 },
   { id: "003/2026", titulo: "Licenças de Software Corporativo", status: "em_analise", valor: "R$ 1.200.000", prazo: "34 dias", propostas: 5, orgao: "PRODESP", progress: 30 }
 ];
 
-const USUARIOS = [
-  { id: 1, nome: "Carlos Eduardo Santos", email: "c.santos@prodesp.sp.gov.br", perfil: "Administrador", dept: "Dir. de TI", status: "ativo" },
-  { id: 2, nome: "Ana Paula Ferreira", email: "a.ferreira@prodesp.sp.gov.br", perfil: "Gestor", dept: "Gestão de Contratos", status: "ativo" }
-];
+const USUARIOS = [];
 
 const PARECERES = [
   { id: 1, edital: "001/2026", titulo: "Parecer sobre habilitação jurídica das licitantes", status: "Aprovado", prazo: "Concluído" },
   { id: 2, edital: "002/2026", titulo: "Análise de conformidade contratual — cláusulas penais", status: "Em Revisão", prazo: "9 dias" }
 ];
 
-// ─── INICIALIZAÇÃO DA APLICAÇÃO ───
-
 document.addEventListener("DOMContentLoaded", () => {
   initEvents();
   initTooltips();
+  updateUserProfileDisplay();
   renderDashboard();
   renderCalendar();
   lucide.createIcons();
@@ -102,7 +130,6 @@ function initEvents() {
     });
   }
 
-  // Atalhos Globais
   document.addEventListener("keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
@@ -114,7 +141,6 @@ function initEvents() {
     }
   });
 
-  // Ocultar popups ao clicar fora
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".ui-menubar-menu")) {
       document.querySelectorAll(".ui-menubar-content").forEach(el => el.classList.remove("active"));
@@ -133,9 +159,9 @@ function initEvents() {
   });
 }
 
-// TOOLTIP COMPONENT (tooltip.tsx)
 function initTooltips() {
   const tooltipEl = document.getElementById("global-tooltip");
+  if (!tooltipEl) return;
   document.querySelectorAll("[data-tooltip]").forEach((el) => {
     el.addEventListener("mouseenter", (e) => {
       const text = el.getAttribute("data-tooltip");
@@ -151,7 +177,6 @@ function initTooltips() {
   });
 }
 
-// TABS COMPONENT (tabs.tsx)
 function switchTab(tabId, triggerEl) {
   const card = triggerEl.closest(".ui-card");
   card.querySelectorAll(".ui-tabs-trigger").forEach(t => t.classList.remove("active"));
@@ -161,7 +186,6 @@ function switchTab(tabId, triggerEl) {
   document.getElementById(tabId).classList.add("active");
 }
 
-// TOGGLE GROUP COMPONENT (toggle-group.tsx)
 function switchViewMode(mode, btnEl) {
   const group = btnEl.closest(".ui-toggle-group");
   group.querySelectorAll(".ui-toggle-group-item").forEach(item => item.classList.remove("active"));
@@ -169,7 +193,6 @@ function switchViewMode(mode, btnEl) {
   showToast(`Modo de exibição alterado para: ${mode.toUpperCase()}`);
 }
 
-// SIDEBAR
 function toggleSidebar() {
   const app = document.getElementById("app");
   const currentState = app.getAttribute("data-sidebar-state");
@@ -177,31 +200,69 @@ function toggleSidebar() {
   app.setAttribute("data-sidebar-state", newState);
 }
 
-// SELECT
 function toggleSelect(id) {
-  document.getElementById(id).classList.toggle("active");
+  if (currentProfile !== 'admin') return; 
+  const selContent = document.getElementById(id);
+  if (selContent) selContent.classList.toggle("active");
 }
 
 function selectProfile(key, label) {
+  if (currentProfile !== 'admin') {
+    showToast("Acesso negado. Apenas administradores podem alterar o perfil.");
+    return;
+  }
   currentProfile = key;
-  document.getElementById("select-perfil-value").innerText = label;
+  const selVal = document.getElementById("select-perfil-value");
+  if (selVal) selVal.innerText = label;
   document.querySelectorAll(".ui-select-content").forEach(el => el.classList.remove("active"));
   updateUserProfileDisplay();
   renderDashboard();
-  showToast(`Perfil alterado para: ${PROFILES[currentProfile].name}`);
+  showToast(`Perfil alterado para: ${label}`);
 }
 
 function updateUserProfileDisplay() {
-  const p = PROFILES[currentProfile];
-  document.getElementById("sidebar-name").innerText = p.name;
-  document.getElementById("sidebar-dept").innerText = p.dept;
-  document.getElementById("sidebar-avatar").innerText = p.initials;
+  const nameEl = document.getElementById("sidebar-name");
+  const deptEl = document.getElementById("sidebar-dept");
+  const avatarEl = document.getElementById("sidebar-avatar");
+  const selectWrapper = document.getElementById("perfil-selector-wrapper");
+
+  let nomeUsuarioAtual = "";
+
+  if (currentUserData && currentUserData.username) {
+    nomeUsuarioAtual = currentUserData.username.trim();
+  } else if (nameEl && nameEl.innerText) {
+    nomeUsuarioAtual = nameEl.innerText.trim();
+  }
+
+  // EXCEÇÃO ABSOLUTA SEQUENCIAL: Prodespadmin é sempre Administrador
+  if (nomeUsuarioAtual.toLowerCase() === "prodespadmin") {
+    currentProfile = "admin";
+  }
+
+  if (currentUserData) {
+    if (nameEl) nameEl.innerText = currentUserData.username;
+    if (deptEl) deptEl.innerText = currentUserData.department || (currentProfile === 'admin' ? "Diretoria de TI" : "Geral");
+    if (avatarEl) {
+      const parts = currentUserData.username.trim().split(" ");
+      const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+      avatarEl.innerText = initials;
+    }
+  } else {
+    const p = PROFILES[currentProfile] || PROFILES.visualizador;
+    if (nameEl) nameEl.innerText = p.name;
+    if (deptEl) deptEl.innerText = p.dept;
+    if (avatarEl) avatarEl.innerText = p.initials;
+  }
+
+  if (selectWrapper) {
+    selectWrapper.style.display = (currentProfile === 'admin') ? 'inline-block' : 'none';
+  }
 }
 
-// RESIZABLE
 function initResize(event, leftPanelId, rightPanelId) {
   const leftPanel = document.getElementById(leftPanelId);
   const rightPanel = document.getElementById(rightPanelId);
+  if (!leftPanel || !rightPanel) return;
   const startX = event.clientX;
   const leftWidth = leftPanel.getBoundingClientRect().width;
   const parentWidth = leftPanel.parentElement.getBoundingClientRect().width;
@@ -224,7 +285,6 @@ function initResize(event, leftPanelId, rightPanelId) {
   document.addEventListener("mouseup", onMouseUp);
 }
 
-// SHEET & SLIDER
 function toggleSheet(id, open) {
   const sheet = document.getElementById(`${id}-backdrop`);
   if (sheet) sheet.classList.toggle("active", open);
@@ -232,10 +292,10 @@ function toggleSheet(id, open) {
 
 function updateSliderDisplay(val) {
   const formatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
-  document.getElementById("slider-value-display").innerText = formatted;
+  const disp = document.getElementById("slider-value-display");
+  if (disp) disp.innerText = formatted;
 }
 
-// NAVEGAÇÃO E DASHBOARD
 function navigateTo(pageId) {
   currentPage = pageId;
   document.querySelectorAll(".nav-item").forEach((el) => {
@@ -244,7 +304,8 @@ function navigateTo(pageId) {
   document.querySelectorAll(".page-content").forEach((page) => {
     page.classList.toggle("active", page.id === `page-${pageId}`);
   });
-  document.getElementById("breadcrumb-current-page").innerText = pageId.charAt(0).toUpperCase() + pageId.slice(1);
+  const breadcrumb = document.getElementById("breadcrumb-current-page");
+  if (breadcrumb) breadcrumb.innerText = pageId.charAt(0).toUpperCase() + pageId.slice(1);
 }
 
 function renderDashboard() {
@@ -259,7 +320,7 @@ function renderKPIs() {
   const container = document.getElementById("kpi-container");
   if (!container) return;
   container.innerHTML = "";
-  const kpis = KPI_DATA[currentProfile] || KPI_DATA.admin;
+  const kpis = KPI_DATA[currentProfile] || KPI_DATA.visualizador;
 
   kpis.forEach((kpi) => {
     const html = `
@@ -290,7 +351,6 @@ function applyCardPermissions() {
   });
 }
 
-// RENDERIZAÇÃO DE TABELAS (TABLE COMPONENT)
 function renderTablesAndLists() {
   const tblEditais = document.getElementById("tbl-editais-andamento");
   if (tblEditais) {
@@ -330,7 +390,7 @@ function renderTablesAndLists() {
   }
 
   const tblUsuarios = document.getElementById("tbl-usuarios");
-  if (tblUsuarios) {
+  if (tblUsuarios && USUARIOS.length > 0) {
     tblUsuarios.innerHTML = USUARIOS.map(
       (u) => `
       <tr class="ui-table-row">
@@ -462,12 +522,6 @@ function hideHoverCard() {
   if (card) card.style.display = "none";
 }
 
-function focusNextOtp(input) {
-  if (input.value.length >= 1 && input.nextElementSibling && input.nextElementSibling.tagName === "INPUT") {
-    input.nextElementSibling.focus();
-  }
-}
-
 function toggleMenubar(id) {
   document.querySelectorAll(".ui-menubar-content").forEach(el => {
     if (el.id !== id) el.classList.remove("active");
@@ -491,10 +545,6 @@ function togglePopover(event, id) {
   popover.style.top = `${rect.bottom + 8}px`;
   popover.style.right = `${window.innerWidth - rect.right}px`;
   popover.classList.toggle("active");
-}
-
-function changePage(pageNum) {
-  showToast(`Carregando página ${pageNum} de editais...`);
 }
 
 function openFormModal(type) {
@@ -561,7 +611,6 @@ function exportData() {
   showToast("Exportando relatório em PDF/Excel...");
 }
 
-// SONNER / TOASTER
 function showToast(message) {
   const container = document.getElementById("toast-container");
   if (!container) return;
