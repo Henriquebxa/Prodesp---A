@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PRODESP — Gestão de Editais e Contratos</title>
 
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
 
   <!-- Estilos e Ícones Lucide -->
   <link rel="stylesheet" href="styles.css">
   <script src="https://unpkg.com/lucide@0.441.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
   <!-- APP SHELL / CONTAINER PRINCIPAL -->
@@ -82,26 +85,34 @@
         <div class="ui-menubar-menu">
           <button class="ui-menubar-trigger" onclick="toggleMenubar('mb-arquivo')">Arquivo</button>
           <div class="ui-menubar-content" id="mb-arquivo">
-            <div class="ui-menubar-item" onclick="openFormModal('novo_edital')"><i data-lucide="plus"></i> Novo Edital <span class="ui-menubar-shortcut">Ctrl+N</span></div>
-            <div class="ui-menubar-item" onclick="exportData()"><i data-lucide="download"></i> Exportar Dados <span class="ui-menubar-shortcut">Ctrl+E</span></div>
+            <div class="ui-menubar-item" onclick="openFormModal('novo_edital')"><i data-lucide="plus"></i> Novo Edital
+              <span class="ui-menubar-shortcut">Ctrl+N</span>
+            </div>
+            <div class="ui-menubar-item" onclick="exportData()"><i data-lucide="download"></i> Exportar Dados <span
+                class="ui-menubar-shortcut">Ctrl+E</span></div>
             <div class="ui-menubar-separator"></div>
-            <div class="ui-menubar-item text-danger" onclick="openAlertDialog('Sair', 'Encerrar sessão?', () => showToast('Sessão encerrada.'))">Sair</div>
+            <div class="ui-menubar-item text-danger"
+              onclick="openAlertDialog('Sair', 'Encerrar sessão?', () => sairDoSistema())">Sair</div>
           </div>
         </div>
 
         <div class="ui-menubar-menu">
           <button class="ui-menubar-trigger" onclick="toggleMenubar('mb-exibir')">Exibir</button>
           <div class="ui-menubar-content" id="mb-exibir">
-            <div class="ui-menubar-item" onclick="toggleSidebar()"><i data-lucide="panel-left"></i> Alternar Sidebar (Ctrl+B)</div>
-            <div class="ui-menubar-item" onclick="toggleSheet('sheet-filtros', true)"><i data-lucide="sliders"></i> Painel de Filtros (Sheet)</div>
+            <div class="ui-menubar-item" onclick="toggleSidebar()"><i data-lucide="panel-left"></i> Alternar Sidebar
+              (Ctrl+B)</div>
+            <div class="ui-menubar-item" onclick="toggleSheet('sheet-filtros', true)"><i data-lucide="sliders"></i>
+              Painel de Filtros (Sheet)</div>
           </div>
         </div>
 
         <div class="ui-menubar-menu">
           <button class="ui-menubar-trigger" onclick="toggleMenubar('mb-ajuda')">Ajuda</button>
           <div class="ui-menubar-content" id="mb-ajuda">
-            <div class="ui-menubar-item" onclick="showToast('Documentação do Sistema PRODESP')"><i data-lucide="help-circle"></i> Documentação</div>
-            <div class="ui-menubar-item" onclick="togglePopover(event, 'popover-suporte')"><i data-lucide="life-buoy"></i> Contato Suporte</div>
+            <div class="ui-menubar-item" onclick="showToast('Documentação do Sistema PRODESP')"><i
+                data-lucide="help-circle"></i> Documentação</div>
+            <div class="ui-menubar-item" onclick="togglePopover(event, 'popover-suporte')"><i
+                data-lucide="life-buoy"></i> Contato Suporte</div>
           </div>
         </div>
       </div>
@@ -117,7 +128,8 @@
           <nav class="ui-navigation-menu">
             <ul class="ui-navigation-menu-list">
               <li class="ui-navigation-menu-item">
-                <button class="ui-navigation-menu-trigger" onclick="toggleNavMenu('nav-m-atalhos')">Módulos Rápidos <i data-lucide="chevron-down"></i></button>
+                <button class="ui-navigation-menu-trigger" onclick="toggleNavMenu('nav-m-atalhos')">Módulos Rápidos <i
+                    data-lucide="chevron-down"></i></button>
                 <div class="ui-navigation-menu-content" id="nav-m-atalhos">
                   <a href="#" class="ui-navigation-menu-link" onclick="navigateTo('editais')">
                     <strong>Módulo de Editais</strong>
@@ -141,8 +153,7 @@
         </div>
 
         <div class="topbar-right">
-          <!-- SELECT CUSTOMIZADO -->
-          <div class="ui-select-wrapper">
+          <div class="ui-select-wrapper" id="perfil-selector-wrapper" style="display: none;">
             <button class="ui-select-trigger" onclick="toggleSelect('select-perfil-content')">
               <span id="select-perfil-value">Administrador</span>
               <i data-lucide="chevron-down" class="size-4 opacity-50"></i>
@@ -157,18 +168,20 @@
             </div>
           </div>
 
-          <!-- NOTIFICAÇÕES (COM TOOLTIP) -->
-          <button class="icon-btn" onclick="togglePopover(event, 'popover-notificacoes')" data-tooltip="Notificações Recentes">
+          <button class="icon-btn" onclick="togglePopover(event, 'popover-notificacoes')"
+            data-tooltip="Notificações Recentes">
             <i data-lucide="bell"></i>
             <span class="badge-dot"></span>
           </button>
 
-          <!-- SHEET TRIGGER -->
-          <button class="icon-btn" data-tooltip="Filtros Avançados (Sheet)" onclick="toggleSheet('sheet-filtros', true)">
+
+          <button class="icon-btn" data-tooltip="Filtros Avançados (Sheet)"
+            onclick="toggleSheet('sheet-filtros', true)">
             <i data-lucide="sliders"></i>
           </button>
 
-          <button class="icon-btn text-danger" data-tooltip="Sair do Sistema" onclick="openAlertDialog('Encerrar Sessão', 'Deseja realmente sair da sua conta?', () => showToast('Sessão encerrada com sucesso.'))">
+          <button class="icon-btn text-danger" data-tooltip="Sair do Sistema"
+            onclick="openAlertDialog('Encerrar Sessão', 'Deseja realmente sair da sua conta?', () => sairDoSistema())">
             <i data-lucide="log-out"></i>
           </button>
         </div>
@@ -176,7 +189,7 @@
 
       <!-- ÁREA DINÂMICA DE CONTEÚDO -->
       <section class="content-body">
-        
+
         <!-- BREADCRUMB -->
         <nav class="ui-breadcrumb" aria-label="breadcrumb">
           <ol class="ui-breadcrumb-list">
@@ -196,7 +209,8 @@
           <div class="ui-alert-content">
             <div class="ui-alert-title">Aviso de Manutenção Programada</div>
             <div class="ui-alert-description">
-              O módulo de homologação passará por manutenção neste fim de semana. Planeje suas submissões com antecedência.
+              O módulo de homologação passará por manutenção neste fim de semana. Planeje suas submissões com
+              antecedência.
             </div>
           </div>
         </div>
@@ -211,10 +225,12 @@
             <div class="header-actions">
               <!-- TOGGLE GROUP (MODO DE VISUALIZAÇÃO) -->
               <div class="ui-toggle-group">
-                <button class="ui-toggle-group-item active" data-tooltip="Visão em Grid" onclick="switchViewMode('grid', this)">
+                <button class="ui-toggle-group-item active" data-tooltip="Visão em Grid"
+                  onclick="switchViewMode('grid', this)">
                   <i data-lucide="grid"></i>
                 </button>
-                <button class="ui-toggle-group-item" data-tooltip="Visão Compacta" onclick="switchViewMode('compact', this)">
+                <button class="ui-toggle-group-item" data-tooltip="Visão Compacta"
+                  onclick="switchViewMode('compact', this)">
                   <i data-lucide="list"></i>
                 </button>
               </div>
@@ -235,7 +251,7 @@
 
           <!-- RESIZABLE PANEL GROUP -->
           <div class="ui-resizable-group mb-4" id="resizable-dashboard-layout">
-            
+
             <div class="ui-resizable-panel" id="panel-left" style="flex: 60%;">
               <div class="ui-card h-full">
                 <div class="ui-card-header">
@@ -248,19 +264,25 @@
                         <div class="ui-carousel-slide">
                           <div class="carousel-banner-item bg-light-purple">
                             <h4>Nova Lei de Licitações (Lei 14.133/21)</h4>
-                            <p>Todos os editais abertos a partir deste mês seguem rigorosamente as diretrizes atualizadas do Estado de SP.</p>
+                            <p>Todos os editais abertos a partir deste mês seguem rigorosamente as diretrizes
+                              atualizadas do
+                              Estado de SP.</p>
                           </div>
                         </div>
                         <div class="ui-carousel-slide">
                           <div class="carousel-banner-item bg-light-green">
                             <h4>Certificação Digital Obrigatória</h4>
-                            <p>Lembre-se de renovar seus certificados e-CPF e e-CNPJ junto à autoridade certificadora antes das sessões públicas.</p>
+                            <p>Lembre-se de renovar seus certificados e-CPF e e-CNPJ junto à autoridade certificadora
+                              antes
+                              das sessões públicas.</p>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <button class="ui-carousel-btn prev" onclick="moveCarousel(-1)"><i data-lucide="arrow-left"></i></button>
-                    <button class="ui-carousel-btn next" onclick="moveCarousel(1)"><i data-lucide="arrow-right"></i></button>
+                    <button class="ui-carousel-btn prev" onclick="moveCarousel(-1)"><i
+                        data-lucide="arrow-left"></i></button>
+                    <button class="ui-carousel-btn next" onclick="moveCarousel(1)"><i
+                        data-lucide="arrow-right"></i></button>
                   </div>
                 </div>
               </div>
@@ -289,13 +311,15 @@
 
           <!-- GRID PRINCIPAL DE CARDS / MÓDULOS -->
           <div class="dashboard-grid" id="cards-container">
-            
+
             <!-- EDITAIS EM ANDAMENTO (COM TABS E TABLE COMPONENT) -->
             <div class="ui-card card-wide" data-card-id="editais_andamento">
               <div class="ui-card-header">
                 <div>
                   <h3 class="ui-card-title">Editais em Andamento</h3>
-                  <p class="ui-card-description">Passe o mouse sobre o código para Hover Card ou clique com botão direito para Context Menu</p>
+                  <p class="ui-card-description">Passe o mouse sobre o código para Hover Card ou clique com botão
+                    direito
+                    para Context Menu</p>
                 </div>
 
                 <!-- COMPONENTE: TABS -->
@@ -340,9 +364,14 @@
                 <div class="p-4 border-t flex justify-center">
                   <nav class="ui-pagination">
                     <ul class="ui-pagination-content">
-                      <li class="ui-pagination-item"><a class="ui-pagination-link" href="#" onclick="changePage(1)">1</a></li>
-                      <li class="ui-pagination-item"><a class="ui-pagination-link active" href="#" onclick="changePage(2)">2</a></li>
-                      <li class="ui-pagination-item"><a class="ui-pagination-link" href="#" onclick="changePage(3)">3</a></li>
+                      <li class="ui-pagination-item"><a class="ui-pagination-link" href="#"
+                          onclick="changePage(1)">1</a>
+                      </li>
+                      <li class="ui-pagination-item"><a class="ui-pagination-link active" href="#"
+                          onclick="changePage(2)">2</a></li>
+                      <li class="ui-pagination-item"><a class="ui-pagination-link" href="#"
+                          onclick="changePage(3)">3</a>
+                      </li>
                     </ul>
                   </nav>
                 </div>
@@ -397,7 +426,8 @@
                       <i data-lucide="chevron-down" class="ui-collapsible-icon"></i>
                     </button>
                     <div class="ui-collapsible-content">
-                      Todas as declarações financeiras e propostas comerciais demandam validação via certificado e-CPF/e-CNPJ.
+                      Todas as declarações financeiras e propostas comerciais demandam validação via certificado
+                      e-CPF/e-CNPJ.
                     </div>
                   </div>
                 </div>
@@ -482,7 +512,7 @@
           </div>
         </div>
 
-        
+
 
       </section>
     </main>
@@ -498,7 +528,7 @@
       </div>
 
       <div class="ui-sheet-body">
-        
+
         <div class="flex items-center justify-between mb-4">
           <label class="font-medium text-sm">Notificações por E-mail</label>
           <label class="ui-switch">
@@ -514,7 +544,8 @@
             <label class="font-medium">Valor Máximo do Edital</label>
             <span id="slider-value-display" class="font-bold text-primary">R$ 5.000.000</span>
           </div>
-          <input type="range" class="ui-slider" min="100000" max="10000000" step="100000" value="5000000" oninput="updateSliderDisplay(this.value)" />
+          <input type="range" class="ui-slider" min="100000" max="10000000" step="100000" value="5000000"
+            oninput="updateSliderDisplay(this.value)" />
         </div>
 
         <div class="ui-separator my-4"></div>
@@ -529,7 +560,8 @@
 
       <div class="ui-sheet-footer">
         <button class="ui-button ui-button-outline" onclick="toggleSheet('sheet-filtros', false)">Cancelar</button>
-        <button class="ui-button ui-button-default" onclick="toggleSheet('sheet-filtros', false); showToast('Filtros aplicados!')">Aplicar Filtros</button>
+        <button class="ui-button ui-button-default"
+          onclick="toggleSheet('sheet-filtros', false); showToast('Filtros aplicados!')">Aplicar Filtros</button>
       </div>
     </div>
   </div>
@@ -541,7 +573,8 @@
       <span class="ui-badge ui-badge-success" id="hover-card-badge">SEFAZ</span>
     </div>
     <div class="hover-card-body">
-      <p id="hover-card-desc">Aquisição e implantação de infraestrutura técnica de servidor cloud de alto desempenho.</p>
+      <p id="hover-card-desc">Aquisição e implantação de infraestrutura técnica de servidor cloud de alto desempenho.
+      </p>
     </div>
   </div>
 
@@ -550,7 +583,8 @@
     <div class="popover-title">Notificações Recentes</div>
     <p class="text-muted text-xs mb-2">3 avisos pendentes de leitura</p>
     <div class="ui-menubar-separator mb-2"></div>
-    <button class="ui-button ui-button-sm ui-button-default w-full" onclick="showToast('Notificações atualizadas')">Limpar Todas</button>
+    <button class="ui-button ui-button-sm ui-button-default w-full"
+      onclick="showToast('Notificações atualizadas')">Limpar Todas</button>
   </div>
 
   <div class="ui-popover" id="popover-suporte">
@@ -564,26 +598,34 @@
     <div class="ui-command-box">
       <div class="ui-command-input-wrapper">
         <i data-lucide="search"></i>
-        <input type="text" id="command-input" placeholder="Digite um comando ou busque no sistema..." oninput="filterCommandItems(this.value)" />
+        <input type="text" id="command-input" placeholder="Digite um comando ou busque no sistema..."
+          oninput="filterCommandItems(this.value)" />
       </div>
       <div class="ui-command-list" id="command-list">
         <div class="ui-command-group-label">Navegação</div>
-        <div class="ui-command-item" onclick="execCommand(() => navigateTo('dashboard'))"><i data-lucide="layout-dashboard"></i> Ir para o Dashboard</div>
-        <div class="ui-command-item" onclick="execCommand(() => navigateTo('editais'))"><i data-lucide="file-text"></i> Ir para Editais</div>
-        
+        <div class="ui-command-item" onclick="execCommand(() => navigateTo('dashboard'))"><i
+            data-lucide="layout-dashboard"></i> Ir para o Dashboard</div>
+        <div class="ui-command-item" onclick="execCommand(() => navigateTo('editais'))"><i data-lucide="file-text"></i>
+          Ir para Editais</div>
+
         <div class="ui-command-group-label">Ações</div>
-        <div class="ui-command-item" onclick="execCommand(() => openFormModal('novo_edital'))"><i data-lucide="plus"></i> Criar Novo Edital</div>
-        <div class="ui-command-item" onclick="execCommand(() => exportData())"><i data-lucide="download"></i> Exportar Relatório</div>
+        <div class="ui-command-item" onclick="execCommand(() => openFormModal('novo_edital'))"><i
+            data-lucide="plus"></i> Criar Novo Edital</div>
+        <div class="ui-command-item" onclick="execCommand(() => exportData())"><i data-lucide="download"></i> Exportar
+          Relatório</div>
       </div>
     </div>
   </div>
 
   <!-- CONTEXT MENU -->
   <div class="ui-context-menu" id="context-menu">
-    <div class="ui-context-menu-item" onclick="execContextMenuAction('Visualizar Detalhes')"><i data-lucide="eye"></i> Visualizar Detalhes</div>
-    <div class="ui-context-menu-item" onclick="execContextMenuAction('Baixar Minuta PDF')"><i data-lucide="file-down"></i> Baixar Minuta (PDF)</div>
+    <div class="ui-context-menu-item" onclick="execContextMenuAction('Visualizar Detalhes')"><i data-lucide="eye"></i>
+      Visualizar Detalhes</div>
+    <div class="ui-context-menu-item" onclick="execContextMenuAction('Baixar Minuta PDF')"><i
+        data-lucide="file-down"></i> Baixar Minuta (PDF)</div>
     <div class="ui-context-menu-separator"></div>
-    <div class="ui-context-menu-item text-danger" onclick="execContextMenuAction('Solicitar Impugnação')"><i data-lucide="alert-triangle"></i> Impugnar Edital</div>
+    <div class="ui-context-menu-item text-danger" onclick="execContextMenuAction('Solicitar Impugnação')"><i
+        data-lucide="alert-triangle"></i> Impugnar Edital</div>
   </div>
 
   <!-- MODAL DE FORMULÁRIOS -->
@@ -627,4 +669,5 @@
   <script src="app.js"></script>
   <script src="pages.js"></script>
 </body>
+
 </html>

@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../lib/prisma.js';
 import { encryptCPF, decryptCPF } from '../lib/cryptoUtils.js';
+import { loginFailureLimiter } from '../middlewares/ratelimiter.js'; 
 
 const router = Router();
 
@@ -36,6 +37,16 @@ function validarCPF(cpf) {
 
 const USUARIOS_EXCECAO = ['Prodespadmin'];
 
+const ADMIN_USERNAME = 'prodespadmin';
+const ehProdespadmin = (username) =>
+    String(username ?? '').trim().toLowerCase() === ADMIN_USERNAME;
+
+function perfilPadrao(username) {
+    return ehProdespadmin(username)
+        ? { role: 'Administrador', department: 'Diretoria de TI' }
+        : { role: 'Visualizador', department: 'Geral' };
+}
+
 function validarCPFMiddleware(req, res, next) {
     const { username, cpf } = req.body;
 
@@ -57,7 +68,6 @@ function validarCPFMiddleware(req, res, next) {
     next();
 }
 
-
 const PRIVATE_KEY = process.env.JWT_PRIVATE_KEY
     ? String(process.env.JWT_PRIVATE_KEY).replace(/\\n/g, '\n')
     : undefined;
@@ -73,7 +83,6 @@ const COOKIE_OPTIONS = {
     maxAge: 15 * 60 * 1000
 };
 
-
 router.post('/registrar', validarCPFMiddleware, async (req, res) => {
     const { username, cpf, password } = req.body;
 
@@ -85,17 +94,29 @@ router.post('/registrar', validarCPFMiddleware, async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const encryptedCPF = encryptCPF(cpf);
 
+        if (ehProdespadmin(username)) {
+            const jaExiste = await prisma.user.findFirst({ where: { username: String(username).trim() } });
+            if (jaExiste) {
+                return res.status(400).json({ error: 'Usuário ou CPF já cadastrado.' });
+            }
+        }
+
+        const { role: initialRole, department: initialDept } = perfilPadrao(username);
+
         const newUser = await prisma.user.create({
             data: {
                 username,
                 cpf: encryptedCPF,
                 password: hashedPassword,
+                role: initialRole,
+                department: initialDept,
+                status: 'ativo'
             },
         });
 
         return res.status(201).json({
             message: 'Usuário cadastrado com sucesso!',
-            user: { id: newUser.id, username: newUser.username }
+            user: { id: newUser.id, username: newUser.username, role: newUser.role }
         });
     } catch (error) {
         console.error("Erro interno no registro:", error);
@@ -106,7 +127,7 @@ router.post('/registrar', validarCPFMiddleware, async (req, res) => {
     }
 });
 
-router.post('/login', validarCPFMiddleware, async (req, res) => {
+router.post('/login', loginFailureLimiter(7, 300), validarCPFMiddleware, async (req, res) => {
     const { username, cpf, password } = req.body;
 
     if (!username || !password) {
@@ -120,17 +141,19 @@ router.post('/login', validarCPFMiddleware, async (req, res) => {
 
         if (!user) {
             console.log(`❌ Login falhou: Usuário '${username}' não encontrado.`);
+            const blocked = await req.recordLoginFailure();
+            if (blocked) {
+                return res.status(429).json({ error: 'Muitas tentativas incorretas. Acesso bloqueado por 5 minutos.' });
+            }
             return res.status(401).json({ error: 'Credenciais inválidas.' });
         }
 
         let decryptedUserCPF = null;
-
         if (user.cpf) {
             if (String(user.cpf).includes(':')) {
                 try {
                     decryptedUserCPF = decryptCPF(user.cpf);
                 } catch (cryptoErr) {
-                    console.error("❌ Erro ao descriptografar CPF do banco:", cryptoErr.message);
                     decryptedUserCPF = null;
                 }
             } else {
@@ -143,22 +166,43 @@ router.post('/login', validarCPFMiddleware, async (req, res) => {
 
         if (!cleanDbCPF || cleanDbCPF !== cleanLoginCPF) {
             console.log('❌ Falha na comparação do CPF.');
+            const blocked = await req.recordLoginFailure();
+            if (blocked) {
+                return res.status(429).json({ error: 'Muitas tentativas incorretas. Acesso bloqueado por 5 minutos.' });
+            }
             return res.status(401).json({ error: 'Credenciais inválidas.' });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             console.log('❌ Falha na verificação de senha.');
+            const blocked = await req.recordLoginFailure();
+            if (blocked) {
+                return res.status(429).json({ error: 'Muitas tentativas incorretas. Acesso bloqueado por 5 minutos.' });
+            }
             return res.status(401).json({ error: 'Credenciais inválidas.' });
         }
+
+        await req.resetLoginFailures();
 
         if (!PRIVATE_KEY) {
             console.error("❌ ERRO: JWT_PRIVATE_KEY não foi encontrada no .env!");
             return res.status(500).json({ error: 'Erro na configuração do servidor.' });
         }
 
+        const padrao = perfilPadrao(user.username);
+        const userRole = ehProdespadmin(user.username) ? 'Administrador' : (user.role || padrao.role);
+        const userDept = user.department || padrao.department;
+
+        if (ehProdespadmin(user.username) && user.role !== 'Administrador') {
+            await prisma.user.update({
+                where: { id: user.id },
+                data: { role: 'Administrador', department: userDept }
+            });
+        }
+
         const token = jwt.sign(
-            { sub: user.id, username: user.username },
+            { sub: user.id, username: user.username, role: userRole },
             process.env.JWT_KEY_PASSPHRASE 
                 ? { key: PRIVATE_KEY, passphrase: process.env.JWT_KEY_PASSPHRASE }
                 : PRIVATE_KEY,
@@ -167,7 +211,15 @@ router.post('/login', validarCPFMiddleware, async (req, res) => {
 
         res.cookie('token', token, COOKIE_OPTIONS);
 
-        return res.status(200).json({ message: 'Login realizado com sucesso!' });
+        return res.status(200).json({ 
+            message: 'Login realizado com sucesso!',
+            user: {
+                id: user.id,
+                username: user.username,
+                role: userRole,
+                department: userDept
+            }
+        });
 
     } catch (error) {
         console.error("Erro no login:", error);
@@ -192,9 +244,77 @@ export function authenticateToken(req, res, next) {
     });
 }
 
+async function requireAdmin(req, res, next) {
+    try {
+        const atual = await prisma.user.findUnique({ where: { id: Number(req.user.sub) } });
+        if (!atual || (!ehProdespadmin(atual.username) && atual.role !== 'Administrador')) {
+            return res.status(403).json({ error: 'Apenas administradores podem executar esta ação.' });
+        }
+        next();
+    } catch (error) {
+        console.error('Erro ao validar administrador:', error);
+        return res.status(500).json({ error: 'Erro ao validar permissões.' });
+    }
+}
+
 router.post('/logout', (req, res) => {
     res.clearCookie('token', COOKIE_OPTIONS);
     return res.status(200).json({ message: 'Logout realizado com sucesso!' });
+});
+
+router.get('/usuarios', authenticateToken, async (req, res) => {
+    try {
+        const usuarios = await prisma.user.findMany({
+            select: {
+                id: true,
+                username: true,
+                role: true,      
+                department: true,
+                status: true,
+                updatedAt: true
+            }
+        });
+        return res.status(200).json(usuarios);
+    } catch (error) {
+        console.error("Erro ao buscar usuários:", error);
+        return res.status(500).json({ error: 'Erro ao buscar usuários.' });
+    }
+});
+
+router.put('/usuarios/:id', authenticateToken, requireAdmin, async (req, res) => {
+    const { id } = req.params;
+    let { username, role, department, status } = req.body;
+
+    try {
+        const alvo = await prisma.user.findUnique({ where: { id: Number(id) } });
+        if (!alvo) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+
+        if (ehProdespadmin(username) && !ehProdespadmin(alvo.username)) {
+            return res.status(400).json({ error: 'Nome de usuário reservado.' });
+        }
+
+        if (ehProdespadmin(alvo.username)) {
+            username = alvo.username;
+            role = 'Administrador';
+            status = 'ativo';
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: Number(id) },
+            data: { username, role, department, status },
+            select: { id: true, username: true, role: true, department: true, status: true, updatedAt: true }
+        });
+
+        return res.status(200).json({
+            message: 'Usuário atualizado com sucesso!',
+            user: updatedUser
+        });
+    } catch (error) {
+        console.error("Erro ao atualizar usuário:", error);
+        return res.status(500).json({ error: 'Erro ao atualizar usuário no banco de dados.' });
+    }
 });
 
 export default router;
