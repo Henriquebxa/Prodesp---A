@@ -18,59 +18,6 @@ body{
     background:#fff;
 }
 
-.gov-bar{
-    background:#000;
-    height:70px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    padding:0 40px;
-}
-
-.gov-logo{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    color:white;
-}
-
-.sp-box{
-    width:50px;
-    height:35px;
-    background:red;
-    border-radius:5px;
-}
-
-.gov-logo h1{
-    font-size:20px;
-    font-weight:800;
-}
-
-.gov-logo p{
-    font-size:11px;
-}
-
-.accessibility{
-    display:flex;
-    gap:10px;
-}
-
-.accessibility span{
-    width:32px;
-    height:32px;
-
-    border:1px solid #999;
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    color:white;
-    font-size:14px;
-}
 :root{
     --primaria: #500878;
     --secundaria: #ae8cc0;
@@ -249,7 +196,7 @@ body{
 .menu-itens {
     list-style: none;
     position: absolute;
-    top: 155px; 
+    top: 85px; 
     left: 975px;
     width: 300px;
     background-color: #4c1072; 
@@ -312,10 +259,6 @@ body{
 }
 
 @media(max-width:700px){
-
-    .gov-bar{
-        padding:0 20px;
-    }
 
     .menu-bar{
         padding:0 20px;
