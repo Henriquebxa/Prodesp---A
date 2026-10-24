@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar - Prodesp</title>
     <link rel="stylesheet" href="registrar.css">
+    <script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer>
+</script>
 </head>
 <body>
     <div class="page-container">
@@ -41,7 +46,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="cpf">CPF:</label>
+                    <label for="cpf">CPF ou CNPJ:</label>
                     <input type="text" id="cpf" name="cpf" required>
                 </div>
 
@@ -55,6 +60,11 @@
                     <label for="confirm-password">Confirmar Senha:</label>
                     <input type="password" id="confirm-password" name="confirm-password" required style="padding-right: 35px;">
                     <button type="button" id="toggle-confirm-password" style="position: absolute; right: 10px; bottom: 8px; background: none; border: none; cursor: pointer; font-size: 14px;"><img src="../imgs/Mostrar_senha.png" alt="Mostrar senha"></button>
+                </div>
+
+                <div
+                    class="cf-turnstile"
+                    data-sitekey="0x4AAAAAAFhX_Wt0fz4AWhRa">
                 </div>
 
                 <button id='Envia' type="submit">Registrar</button>

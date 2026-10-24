@@ -1,11 +1,11 @@
 import { registrarUsuario } from './api.js';
-import { mascararCPF, limparCPF, validarCPF } from './cpfUtils.js';
+import { mascararDocumento, limparDocumento, validarDocumento } from './cpfUtils.js';   // mudou
 
 const cpfInput = document.getElementById('cpf');
 
 if (cpfInput) {
     cpfInput.addEventListener('input', (e) => {
-        e.target.value = mascararCPF(e.target.value);
+        e.target.value = mascararDocumento(e.target.value);   // mudou
     });
 }
 
@@ -28,13 +28,13 @@ document.querySelector('form').addEventListener('submit', async (event) => {
         u => u.toLowerCase() === String(username).trim().toLowerCase()
     );
 
-    if (!isExcecao && !validarCPF(cpfBruto)) {
-        alert('Por favor, digite um CPF válido!');
+    if (!isExcecao && !validarDocumento(cpfBruto)) {   // mudou
+        alert('Por favor, digite um CPF ou CNPJ válido!');   // mudou (só o texto)
         cpfInput.focus();
         return;
     }
 
-    const cpfLimpo = limparCPF(cpfBruto);
+    const cpfLimpo = limparDocumento(cpfBruto);   // mudou
 
     try {
         await registrarUsuario({ username, cpf: cpfLimpo, password });

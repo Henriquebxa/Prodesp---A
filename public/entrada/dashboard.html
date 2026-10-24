@@ -167,7 +167,10 @@
               <div class="ui-select-item" onclick="selectProfile('juridico', 'Revisor Jurídico')">Revisor Jurídico</div>
             </div>
           </div>
-
+          <button class="icon-btn" data-tooltip="Verificação em duas etapas"
+    onclick="abrirModal2FA()">
+  <i data-lucide="shield-check"></i>
+</button>
           <button class="icon-btn" onclick="togglePopover(event, 'popover-notificacoes')"
             data-tooltip="Notificações Recentes">
             <i data-lucide="bell"></i>
@@ -658,7 +661,15 @@
       </div>
     </div>
   </div>
-
+  <div class="modal-backdrop" id="twofa-backdrop">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title" id="twofa-title">Verificação em duas etapas</h3>
+      <button class="modal-close" id="twofa-close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body" id="twofa-body"></div>
+  </div>
+</div>
   <!-- TOOLTIP FLUTUANTE GLOBAL -->
   <div class="ui-tooltip" id="global-tooltip"></div>
 
@@ -668,6 +679,7 @@
   <!-- SCRIPTS -->
   <script src="app.js"></script>
   <script src="pages.js"></script>
+<script type="module" src="twofa.js"></script>
 </body>
 
 </html>

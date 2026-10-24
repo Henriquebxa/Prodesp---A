@@ -16,4 +16,27 @@ model User {
   department String   @default("Geral")
   status     String   @default("ativo")
   updatedAt  DateTime @updatedAt
+
+  twoFactorSecret  String?
+  twoFactorEnabled Boolean @default(false)
+  twoFactorMethod  String? @default("totp")
+  phone            String?
+
+  otpCodes OtpCode[]
+}
+
+model OtpCode {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  purpose     String
+  codeHash    String
+  destination String?
+  attempts    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime
+  usedAt      DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose, createdAt])
 }

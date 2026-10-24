@@ -123,8 +123,7 @@ input[type="password"] {
     width: 100%;
     border: none;
     border-bottom: 1.5px solid #cccccc;
-    padding: 6px 35px 6px 0; /* Adicionado padding à direita para o texto não ficar sob o ícone */
-    font-size: 14px;
+    padding: 6px 35px 6px 0; 
     color: #333333;
     background-color: transparent;
     outline: none;
@@ -136,7 +135,7 @@ input[type="password"]:focus {
     border-bottom-color: #4c2582;
 }
 
-/* Estilização e posicionamento do botão de alternar senha */
+
 .input-group button[type="button"] {
     position: absolute;
     right: 5px;
@@ -150,7 +149,6 @@ input[type="password"]:focus {
     justify-content: center;
 }
 
-/* Tamanho compacto e adequado para a imagem do ícone */
 .input-group button[type="button"] img {
     width: 20px;
     height: 20px;
@@ -212,4 +210,8 @@ button[type="submit"]:hover {
     --secundaria: #ae8cc0;
     --terciaria: #753b94;
     --fundo: #aaaaaa;
+}
+
+[hidden] {
+    display: none !important;
 }

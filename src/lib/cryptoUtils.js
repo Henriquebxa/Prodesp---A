@@ -50,3 +50,5 @@ export function decryptCPF(encryptedCPF) {
     
     return decrypted;
 }
+export const encryptText = encryptCPF;
+export const decryptText = decryptCPF;

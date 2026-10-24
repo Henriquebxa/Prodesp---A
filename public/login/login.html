@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="login.css">
 </head>
 <body>
-        <div class="page-container">
-        
+    <div class="page-container">
+
         <div class="banner-side"></div>
 
         <main>
-            
+
             <form id="login-form">
-                
+
                 <button type="button" class="btn-back" onclick="window.history.back()">
                     <svg viewBox="0 0 24 24">
                         <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
@@ -34,14 +34,14 @@
                 </div>
 
                 <h1>Acesso ao Sistema</h1>
-                
+
                 <div class="input-group">
                     <label for="username">Usuário:</label>
                     <input type="text" id="username" name="username" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="cpf">CPF:</label>
+                    <label for="cpf">CPF ou CNPJ:</label>
                     <input type="text" id="cpf" name="cpf" required>
                 </div>
 
@@ -51,6 +51,8 @@
                     <button type="button" id="toggle-password" style="position: absolute; right: 10px; bottom: 8px; background: none; border: none; cursor: pointer; font-size: 14px;"><img src="../imgs/Mostrar_senha.png" alt="Mostrar senha"></button>
                 </div>
 
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAAFhX_Wt0fz4AWhRa"></div>
+
                 <button type="submit">Entrar</button>
 
                 <div class="form-footer-links">
@@ -58,8 +60,46 @@
                     <span style="color: #777;">Não tem uma conta? </span> <a href="../registrar/registrar.html">Registrar-se</a>
                 </div>
             </form>
+
+            <form id="twofa-form" hidden>
+
+                <button type="button" class="btn-back" id="twofa-voltar">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
+                    </svg>
+                    Voltar
+                </button>
+
+                <div class="brand-header">
+                    <svg class="prodesp-icon" viewBox="0 0 100 115" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="22" r="18" />
+                        <line x1="50" y1="22" x2="78" y2="58" stroke-width="10" stroke="#4c2582" />
+                        <circle cx="78" cy="58" r="18" />
+                        <line x1="78" y1="58" x2="32" y2="92" stroke-width="10" stroke="#4c2582" />
+                        <circle cx="32" cy="92" r="18" />
+                    </svg>
+                    <div class="prodesp-text">Prodesp</div>
+                </div>
+
+                <h1>Verificação em duas etapas</h1>
+
+                <div class="input-group">
+                    <label for="code" id="twofa-label">Código do aplicativo autenticador ou SMS:</label>
+                    <input type="text" id="code" name="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required>
+                </div>
+
+                <button type="submit">Verificar</button>
+
+                <button type="button" id="twofa-reenviar" hidden
+                    style="background:none;border:none;color:#4c2582;font-size:12px;font-weight:600;cursor:pointer;margin-top:14px;">
+                    Reenviar código por SMS
+                </button>
+            </form>
+
         </main>
     </div>
+
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script type="module" src="../api/mandlogin.js"></script>
 </body>
-<script type="module" src="../api/mandLogin.js"></script>
 </html>
