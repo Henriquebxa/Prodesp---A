@@ -637,7 +637,7 @@ router.post('/login/2fa/reenviar', async (req, res) => {
                     error: 'Aguarde 1 minuto para pedir outro código.'
                 });
             }
-            
+
             await cancelarOtps(user.id, 'login');
 
             console.error(
@@ -949,7 +949,7 @@ router.post('/2fa/sms/setup', authenticateToken, async (req, res) => {
             });
         }
 
-        
+
         return res.json({
             message: 'Código de verificação enviado por SMS.',
             destination: mascararTelefone(phone)

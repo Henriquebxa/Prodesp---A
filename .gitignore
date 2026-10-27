@@ -1,8 +1,9 @@
 .env
 newprivate.pem
 newpublic.pem
-docker-compose.yml
+docker-compose1.yml
 Checkkey.js
+Env.js
+prisma/seed.js
 generateKeys.js
-
 /src/generated/prisma
