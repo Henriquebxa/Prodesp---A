@@ -1,11 +1,11 @@
 import { registrarUsuario } from './api.js';
-import { mascararDocumento, limparDocumento, validarDocumento } from './cpfUtils.js';   // mudou
+import { mascararDocumento, limparDocumento, validarDocumento } from './cpfUtils.js'; 
 
 const cpfInput = document.getElementById('cpf');
 
 if (cpfInput) {
     cpfInput.addEventListener('input', (e) => {
-        e.target.value = mascararDocumento(e.target.value);   // mudou
+        e.target.value = mascararDocumento(e.target.value);  
     });
 }
 
@@ -28,16 +28,28 @@ document.querySelector('form').addEventListener('submit', async (event) => {
         u => u.toLowerCase() === String(username).trim().toLowerCase()
     );
 
-    if (!isExcecao && !validarDocumento(cpfBruto)) {   // mudou
-        alert('Por favor, digite um CPF ou CNPJ válido!');   // mudou (só o texto)
+    if (!isExcecao && !validarDocumento(cpfBruto)) {  
+        alert('Por favor, digite um CPF ou CNPJ válido!');   
         cpfInput.focus();
         return;
     }
 
-    const cpfLimpo = limparDocumento(cpfBruto);   // mudou
+    const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value || '';
+
+    if (!turnstileToken) {
+        alert('Complete a verificação CAPTCHA antes de registrar.');
+        return;
+    }
+
+    const cpfLimpo = limparDocumento(cpfBruto);  
 
     try {
-        await registrarUsuario({ username, cpf: cpfLimpo, password });
+        await registrarUsuario({ 
+            username, 
+            cpf: cpfLimpo, 
+            password,
+            'cf-turnstile-response': turnstileToken 
+        });
         
         alert('Usuário cadastrado com sucesso!');
         window.location.href = '../login/login.html';

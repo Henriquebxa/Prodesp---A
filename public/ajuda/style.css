@@ -1,0 +1,111 @@
+:root {
+  --primary: #500878;
+  --primary-hover: #3D0660;
+  --primary-light: #F8F4FD;
+  --primary-accent: #EDE4F8;
+  --primary-foreground: #FFFFFF;
+  --bg-main: #FFFFFF;
+  --text-main: #1F1A29;
+  --text-muted: #5B5068;
+  --border: #DCCFEC;
+  --focus: #F2B01E;
+  --radius: 6px;
+  --font-family: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 1rem; }
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { line-height: 1.25; margin: 0 0 .5rem; color: var(--primary); }
+h1 { font-size: clamp(2rem, 5vw, 2.9rem); color: #fff; }
+h2 { font-size: clamp(1.5rem, 3.5vw, 1.9rem); }
+h3 { font-size: 1.1rem; }
+p { margin: 0 0 1rem; }
+a { color: var(--primary); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.container { width: min(1100px, 100% - 2rem); margin-inline: auto; }
+.narrow { width: min(780px, 100% - 2rem); }
+.skip-link { position: absolute; left: -999px; top: 0; background: var(--focus); color: #000; padding: .6rem 1rem; z-index: 20; }
+.skip-link:focus { left: 0; }
+
+.site-header { background: var(--primary-hover); color: #fff; border-bottom: 4px solid var(--focus); }
+.header-inner { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-block: .75rem; }
+.brand { margin: 0; font-weight: 700; font-size: 1.2rem; }
+.brand span { font-weight: 400; font-size: .95rem; opacity: .85; margin-left: .5rem; }
+
+.btn { font: inherit; font-weight: 600; padding: .6rem 1.1rem; border-radius: var(--radius); border: 2px solid transparent; cursor: pointer; text-decoration: none; display: inline-block; min-height: 44px; }
+.btn-light { background: var(--primary-foreground); color: var(--primary); }
+.btn-light:hover { background: var(--primary-light); }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-outline { background: #fff; color: var(--primary); border-color: var(--primary); }
+.btn-outline:hover { background: var(--primary-light); }
+
+.hero { background: var(--primary); color: #fff; padding-block: 3rem; }
+.hero-sub { font-size: 1.3rem; margin-bottom: 1rem; color: var(--primary-accent); }
+.hero-text { max-width: 68ch; color: #e4ebf4; }
+.quick-links { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
+.quick-links a { color: var(--primary-foreground); border: 1px solid rgba(255,255,255,.55); padding: .45rem .9rem; border-radius: 999px; text-decoration: none; }
+.quick-links a:hover { background: rgba(255,255,255,.15); }
+
+.section { padding-block: 3rem; }
+.section-alt { background: var(--primary-light); }
+.lead { color: var(--text-muted); max-width: 70ch; font-size: 1.05rem; margin-bottom: 1.5rem; }
+
+.feature-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.feature-grid li { border-left: 4px solid var(--primary); background: var(--primary-light); padding: .9rem 1rem; border-radius: 0 var(--radius) var(--radius) 0; }
+.feature-grid p { margin: 0; color: var(--text-muted); }
+
+.tablist { display: flex; flex-wrap: wrap; gap: .25rem; border-bottom: 2px solid var(--border); }
+.tablist button { font: inherit; font-weight: 600; background: transparent; border: 0; border-bottom: 4px solid transparent; padding: .7rem 1rem; cursor: pointer; color: var(--text-muted); min-height: 44px; margin-bottom: -2px; }
+.tablist button[aria-selected="true"] { color: var(--primary); border-bottom-color: var(--focus); }
+.tablist button:hover { color: var(--primary); background: var(--primary-light); }
+[role="tabpanel"] { background: #fff; padding: 1.25rem 1.5rem; border: 1px solid var(--border); border-top: 0; }
+[hidden] { display: none !important; }
+.steps { margin: 0; padding-left: 1.4rem; }
+.steps li { margin-bottom: .6rem; padding-left: .3rem; }
+.steps li::marker { color: var(--primary); font-weight: 700; }
+
+.faq-tools label { display: block; font-weight: 600; margin-bottom: .35rem; }
+.faq-tools input { width: 100%; font: inherit; padding: .7rem .9rem; border: 2px solid var(--border); border-radius: var(--radius); min-height: 44px; }
+.faq-tools input:focus { border-color: var(--primary); }
+.faq-actions { display: flex; gap: .6rem; margin-top: .8rem; flex-wrap: wrap; }
+.status { color: var(--text-muted); font-size: .9rem; margin: .8rem 0; min-height: 1.4em; }
+.empty { padding: 1rem; background: var(--primary-light); border-radius: var(--radius); }
+
+.faq-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: .6rem; background: #fff; }
+.faq-item h3 { margin: 0; font-family: inherit; }
+.faq-btn { width: 100%; text-align: left; font: inherit; font-weight: 600; color: var(--primary); background: transparent; border: 0; padding: 1rem 3rem 1rem 1.1rem; cursor: pointer; position: relative; min-height: 44px; border-radius: var(--radius); }
+.faq-btn::after { content: "+"; position: absolute; right: 1.1rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: var(--primary); }
+.faq-btn[aria-expanded="true"]::after { content: "\2212"; }
+.faq-btn:hover { background: var(--primary-light); }
+.faq-btn[aria-expanded="true"] { border-bottom: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; }
+.faq-panel { padding: 1rem 1.1rem 0; color: var(--text-main); }
+.faq-panel p:last-child { margin-bottom: 1rem; }
+mark { background: var(--primary-accent); color: inherit; padding: 0 .1em; }
+
+.note { color: var(--text-muted); font-size: .85rem; }
+.site-footer { background: var(--primary-hover); color: #cfd9e6; padding-block: 1.2rem; font-size: .9rem; }
+.site-footer p { margin: 0; }
+
+@media (max-width: 600px) {
+  .brand span { display: block; margin: 0; }
+  .hero { padding-block: 2rem; }
+  .section { padding-block: 2rem; }
+  .tablist button { flex: 1 1 45%; }
+  [role="tabpanel"] { padding: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.flow { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; margin: 0 0 1.5rem; padding: 0; }
+.flow li { background: var(--primary-accent); color: var(--primary-hover); font-weight: 600; padding: .4rem .8rem; border-radius: 999px; }
+.flow li:not(:last-child)::after { content: "\203A"; margin-left: .7rem; color: var(--primary); }
+.tablist button { min-width: 0; }

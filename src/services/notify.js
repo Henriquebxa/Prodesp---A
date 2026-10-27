@@ -30,7 +30,6 @@ export async function enviarSms(para, code) {
             );
         }
 
-        // Modo de teste: sem Infobip, o código aparece no terminal do servidor.
         console.log(`[DEV] SMS para ${mascararTelefone(para)}: código ${code}`);
         return { dev: true };
     }

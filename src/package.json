@@ -4,6 +4,7 @@
   "type": "module",
   "main": "src/server.js",
   "scripts": {
+    "build": "npm install && npx prisma generate",
     "start": "node src/server.js"
   },
   "dependencies": {

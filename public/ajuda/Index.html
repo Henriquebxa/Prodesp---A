@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sobre e Ajuda | Sistema de Licitações Prodesp</title>
+  <meta name="description" content="Orientações para utilizar o sistema de licitações da Prodesp.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo principal</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <p class="brand">Prodesp <span>Sistema de Licitações</span></p>
+      <button type="button" class="btn btn-light" id="btn-voltar" aria-label="Voltar à página anterior">&larr; Voltar</button>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero" aria-labelledby="titulo-pagina">
+      <div class="container">
+        <h1 id="titulo-pagina">Sobre e Ajuda</h1>
+        <p class="hero-sub">Encontre orientações para utilizar o sistema de licitações da Prodesp</p>
+        <p class="hero-text">A plataforma reúne, em um só lugar, a criação, a revisão, a aprovação e a consulta de editais, além da gestão de usuários e permissões. Aqui você aprende a usar cada recurso de acordo com o seu perfil.</p>
+        <nav class="quick-links" aria-label="Atalhos da página">
+          <a href="#sobre">Sobre o sistema</a>
+          <a href="#perfis">Procedimentos por perfil</a>
+          <a href="#faq">Perguntas frequentes</a>
+          <a href="#contato">Suporte</a>
+        </nav>
+      </div>
+    </section>
+
+    <section id="sobre" class="section" aria-labelledby="titulo-sobre">
+      <div class="container">
+        <h2 id="titulo-sobre">Sobre o sistema</h2>
+        <p class="lead">O sistema de licitações da Prodesp facilita o acesso às informações das contratações públicas e organiza cada etapa do processo, com registro e rastreabilidade.</p>
+        <ul class="feature-grid">
+          <li><h3>Cadastro de usuários</h3><p>Cadastre usuários e defina perfis e permissões.</p></li>
+          <li><h3>Visão geral do sistema</h3><p>Administradores visualizam o sistema de forma geral.</p></li>
+          <li><h3>Criação de editais</h3><p>Crie um novo edital e preencha as informações.</p></li>
+          <li><h3>Rascunhos</h3><p>Salve o edital como rascunho e continue depois.</p></li>
+          <li><h3>Revisão</h3><p>Receba o edital, aponte correções e devolva ou libere.</p></li>
+          <li><h3>Aprovação</h3><p>Aprove, reprove ou solicite ajustes no edital revisado.</p></li>
+          <li><h3>Consulta</h3><p>Consulte editais sem alterar as informações.</p></li>
+          <li><h3>Acompanhamento</h3><p>Veja em que etapa está cada edital.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="perfis" class="section section-alt" aria-labelledby="titulo-perfis">
+      <div class="container">
+        <h2 id="titulo-perfis">Procedimentos por perfil</h2>
+        <p class="lead">As opções disponíveis dependem do seu perfil. O edital segue este caminho; caso esteja faltando alguma funcionalidade, observe o que cada cargo faz e se necessário peça para o administrador mudar o seu cargo.</p>
+        <ol class="flow" aria-label="Fluxo do edital">
+          <li>Analista cria</li><li>Revisor revisa</li><li>Gestor decide</li><li>Visualizador consulta</li>
+        </ol>
+
+        <div class="tabs">
+          <div class="tablist" role="tablist" aria-label="Perfis de usuário">
+            <button role="tab" id="tab-admin" aria-controls="painel-admin" aria-selected="true" tabindex="0">Administrador</button>
+            <button role="tab" id="tab-analista" aria-controls="painel-analista" aria-selected="false" tabindex="-1">Analista</button>
+            <button role="tab" id="tab-revisor" aria-controls="painel-revisor" aria-selected="false" tabindex="-1">Revisor</button>
+            <button role="tab" id="tab-gestor" aria-controls="painel-gestor" aria-selected="false" tabindex="-1">Gestor</button>
+            <button role="tab" id="tab-visualizador" aria-controls="painel-visualizador" aria-selected="false" tabindex="-1">Visualizador</button>
+          </div>
+
+          <div role="tabpanel" id="painel-admin" aria-labelledby="tab-admin" tabindex="0">
+            <ol class="steps">
+              <li>Acesse <strong>Administração</strong> e abra a lista de usuários.</li>
+              <li>Cadastre novos usuários.</li>
+              <li>Defina o perfil e as permissões de cada um.</li>
+              <li>Visualize o sistema de forma geral para acompanhar o uso.</li>
+            </ol>
+          </div>
+          <div role="tabpanel" id="painel-analista" aria-labelledby="tab-analista" tabindex="0" hidden>
+            <ol class="steps">
+              <li>Clique em <strong>Novo edital</strong>.</li>
+              <li>Preencha as informações do edital.</li>
+              <li>Salve como <strong>rascunho</strong> para continuar depois.</li>
+              <li>Quando estiver pronto, <strong>encaminhe para revisão</strong>.</li>
+            </ol>
+          </div>
+          <div role="tabpanel" id="painel-revisor" aria-labelledby="tab-revisor" tabindex="0" hidden>
+            <ol class="steps">
+              <li>Abra os editais recebidos para revisão.</li>
+              <li>Visualize o conteúdo completo do edital.</li>
+              <li>Aponte as correções necessárias.</li>
+              <li><strong>Devolva</strong> ao analista ou <strong>libere</strong> para a continuidade do processo.</li>
+            </ol>
+          </div>
+          <div role="tabpanel" id="painel-gestor" aria-labelledby="tab-gestor" tabindex="0" hidden>
+            <ol class="steps">
+              <li>Abra os editais revisados que aguardam decisão.</li>
+              <li>Analise o edital e as observações da revisão.</li>
+              <li><strong>Aprove</strong> ou <strong>reprove</strong> o edital.</li>
+              <li>Se preferir, <strong>solicite ajustes</strong> antes de decidir.</li>
+            </ol>
+          </div>
+          <div role="tabpanel" id="painel-visualizador" aria-labelledby="tab-visualizador" tabindex="0" hidden>
+            <ol class="steps">
+              <li>Acesse <strong>Editais</strong> e localize o edital desejado.</li>
+              <li>Consulte as informações e a situação atual.</li>
+              <li>Neste perfil não é possível alterar as informações.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section" aria-labelledby="titulo-faq">
+      <div class="container narrow">
+        <h2 id="titulo-faq">Central de ajuda e perguntas frequentes</h2>
+
+        <div class="faq-tools">
+          <label for="busca-faq">Buscar uma dúvida</label>
+          <input type="search" id="busca-faq" placeholder="Ex.: proposta, edital, parecer" autocomplete="off">
+          <div class="faq-actions">
+            <button type="button" class="btn btn-outline" id="expandir-tudo">Abrir todas</button>
+            <button type="button" class="btn btn-outline" id="recolher-tudo">Fechar todas</button>
+          </div>
+        </div>
+        <p id="faq-status" class="status" role="status" aria-live="polite"></p>
+
+        <div class="faq-list" id="faq-lista">
+          <article class="faq-item">
+            <h3><button type="button" class="faq-btn" aria-expanded="false" aria-controls="resp-1" id="perg-1">Como localizar e consultar um edital?</button></h3>
+            <div class="faq-panel" id="resp-1" role="region" aria-labelledby="perg-1" hidden>
+              <p>No menu, abra <strong>Editais</strong>. Use a busca e os filtros de situação para reduzir a lista e clique no edital para ver as informações. Todos os perfis podem consultar, mas somente os perfis autorizados alteram.</p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <h3><button type="button" class="faq-btn" aria-expanded="false" aria-controls="resp-2" id="perg-2">Como criar um novo edital?</button></h3>
+            <div class="faq-panel" id="resp-2" role="region" aria-labelledby="perg-2" hidden>
+              <p>Perfil <strong>Analista</strong>: clique em <strong>Novo edital</strong> e preencha as informações. Você pode salvar a qualquer momento como rascunho.</p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <h3><button type="button" class="faq-btn" aria-expanded="false" aria-controls="resp-3" id="perg-3">Como salvar um rascunho e encaminhar para revisão?</button></h3>
+            <div class="faq-panel" id="resp-3" role="region" aria-labelledby="perg-3" hidden>
+              <p>Use <strong>Salvar rascunho</strong> para guardar o que já foi preenchido. Quando terminar, clique em <strong>Encaminhar para revisão</strong>. O edital passa ao Revisor.</p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <h3><button type="button" class="faq-btn" aria-expanded="false" aria-controls="resp-4" id="perg-4">Como apontar correções ou liberar um edital?</button></h3>
+            <div class="faq-panel" id="resp-4" role="region" aria-labelledby="perg-4" hidden>
+              <p>Perfil <strong>Revisor</strong>: abra o edital recebido e aponte as correções. Escolha <strong>Devolver</strong> para o analista ajustar ou <strong>Liberar</strong> para seguir ao Gestor.</p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <h3><button type="button" class="faq-btn" aria-expanded="false" aria-controls="resp-5" id="perg-5">Como aprovar, reprovar ou solicitar ajustes?</button></h3>
+            <div class="faq-panel" id="resp-5" role="region" aria-labelledby="perg-5" hidden>
+              <p>Perfil <strong>Gestor</strong>: abra o edital revisado, analise e escolha <strong>Aprovar</strong>, <strong>Reprovar</strong> ou <strong>Solicitar ajustes</strong>.</p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <h3><button type="button" class="faq-btn" aria-expanded="false" aria-controls="resp-6" id="perg-6">Como acompanhar o andamento de um edital?</button></h3>
+            <div class="faq-panel" id="resp-6" role="region" aria-labelledby="perg-6" hidden>
+              <p>Abra o edital e veja a situação atual, como rascunho, em revisão ou aprovado. Ela mostra com quem o edital está.</p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <h3><button type="button" class="faq-btn" aria-expanded="false" aria-controls="resp-7" id="perg-7">Por que não consigo editar um edital?</button></h3>
+            <div class="faq-panel" id="resp-7" role="region" aria-labelledby="perg-7" hidden>
+              <p>O perfil <strong>Visualizador</strong> só consulta e não altera informações. Os demais perfis editam apenas na sua etapa. Para mudar o perfil, procure o Administrador.</p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <h3><button type="button" class="faq-btn" aria-expanded="false" aria-controls="resp-8" id="perg-8">Como cadastrar usuários e definir perfis?</button></h3>
+            <div class="faq-panel" id="resp-8" role="region" aria-labelledby="perg-8" hidden>
+              <p>Perfil <strong>Administrador</strong>: em <strong>Administração</strong>, cadastre o usuário e escolha o perfil (Administrador, Analista, Revisor, Gestor ou Visualizador) e as permissões.</p>
+            </div>
+          </article>
+        </div>
+
+        <p id="faq-vazio" class="empty" hidden>Nenhuma pergunta encontrada. Tente outra palavra ou fale com o suporte.</p>
+      </div>
+    </section>
+
+    <section id="contato" class="section section-alt" aria-labelledby="titulo-contato">
+      <div class="container narrow">
+        <h2 id="titulo-contato">Ainda precisa de ajuda?</h2>
+        <p class="lead">Se a sua dúvida não foi respondida, fale com o suporte. Informe o seu perfil, o número do processo e o que você estava tentando fazer.</p>
+        <p><a class="btn btn-primary" href="mailto:suporte@exemplo.sp.gov.br">Enviar e-mail ao suporte</a></p>
+        <p class="note">Substitua o endereço de e-mail acima pelo canal oficial de suporte da Prodesp.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container"><p>&copy; <span id="ano"></span> Prodesp.</p></div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -24,7 +24,6 @@ function mostrarEtapaLogin() {
 function mostrarEtapa2FA(resultado = {}) {
     const ehSms = resultado.method === 'sms';
 
-    // O texto muda conforme o método da conta
     document.getElementById('twofa-label').textContent = ehSms
         ? `Código enviado por SMS para ${resultado.destination}:`
         : 'Código do aplicativo autenticador:';
@@ -37,8 +36,6 @@ function mostrarEtapa2FA(resultado = {}) {
     codeInput.focus();
 }
 
-// O token do Turnstile só vale para uma tentativa. Depois de qualquer
-// resposta do servidor é preciso gerar outro.
 function resetarCaptcha() {
     try {
         window.turnstile?.reset();
@@ -48,14 +45,12 @@ function resetarCaptcha() {
 }
 
 function concluirLogin(resultado) {
-    // Guarda o usuário (com o cargo vindo do servidor) para o dashboard montar o perfil
     localStorage.setItem('prodesp_user', JSON.stringify(resultado.user));
 
     alert(resultado.message || 'Login realizado com sucesso!');
     window.location.href = '../entrada/dashboard.html';
 }
 
-// ── Etapa 1: usuário, CPF/CNPJ, senha e CAPTCHA ──
 loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -73,7 +68,6 @@ loginForm.addEventListener('submit', async (event) => {
         return;
     }
 
-    // O Turnstile cria este campo escondido dentro do formulário
     const turnstileToken =
         loginForm.querySelector('[name="cf-turnstile-response"]')?.value || '';
 
@@ -92,7 +86,6 @@ loginForm.addEventListener('submit', async (event) => {
             'cf-turnstile-response': turnstileToken
         });
 
-        // Senha correta, mas o usuário tem 2FA: pede o código
         if (resultado.requires2FA) {
             mostrarEtapa2FA(resultado);
             return;
@@ -105,7 +98,6 @@ loginForm.addEventListener('submit', async (event) => {
     }
 });
 
-// ── Etapa 2: código do aplicativo autenticador ──
 twofaForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -123,7 +115,6 @@ twofaForm.addEventListener('submit', async (event) => {
     } catch (error) {
         alert(error.message);
 
-        // Sessão temporária expirou: volta para a primeira etapa
         if (/sess[ãa]o/i.test(error.message)) {
             mostrarEtapaLogin();
         } else {
@@ -135,7 +126,6 @@ twofaForm.addEventListener('submit', async (event) => {
 
 document.getElementById('twofa-voltar')?.addEventListener('click', mostrarEtapaLogin);
 
-// Reenvio do SMS (o servidor limita a 1 por minuto)
 document.getElementById('twofa-reenviar')?.addEventListener('click', async () => {
     try {
         await reenviarCodigo2FA();

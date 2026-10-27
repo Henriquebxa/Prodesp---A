@@ -1,6 +1,3 @@
-// ─── DADOS E ESTADO GERAL DO SISTEMA PRODESP ───
-
-// Leitura síncrona imediata do localStorage para evitar atrasos no carregamento
 const savedUser = JSON.parse(localStorage.getItem('prodesp_user') || 'null');
 
 let initialProfile = "visualizador";
@@ -8,14 +5,12 @@ let initialProfile = "visualizador";
 if (savedUser) {
   const nome = String(savedUser.username || "").trim().toLowerCase();
   
-  // LEITURA SEQUENCIAL: Se for Prodespadmin, força o perfil para admin de forma prioritária
   if (nome === "prodespadmin") {
     initialProfile = "admin";
     savedUser.role = "Administrador";
   } else if (savedUser.role === "Administrador") {
     initialProfile = "admin";
   } else {
-    // Todos os outros usuários novos iniciam estritamente como visualizador ou conforme definido no banco
     const mapCargos = {
       "Administrador": "admin",
       "Gestor": "gestor",
@@ -234,7 +229,6 @@ function updateUserProfileDisplay() {
     nomeUsuarioAtual = nameEl.innerText.trim();
   }
 
-  // EXCEÇÃO ABSOLUTA SEQUENCIAL: Prodespadmin é sempre Administrador
   if (nomeUsuarioAtual.toLowerCase() === "prodespadmin") {
     currentProfile = "admin";
   }

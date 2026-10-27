@@ -115,7 +115,6 @@ function telaQr({ qr, secret }) {
         ${FORM_CODIGO('2. Digite o código de 6 dígitos que o aplicativo mostra')}
     `);
 
-    // Valores do servidor entram por propriedade, não por texto HTML
     $('twofa-qr-img').src = qr;
     $('twofa-secret').textContent = secret;
 
@@ -224,7 +223,6 @@ window.abrirModal2FA = abrir;
 document.addEventListener('DOMContentLoaded', () => {
     $('twofa-close')?.addEventListener('click', fechar);
 
-    // Fecha ao clicar fora da caixa
     $('twofa-backdrop')?.addEventListener('click', (e) => {
         if (e.target.id === 'twofa-backdrop') fechar();
     });

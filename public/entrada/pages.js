@@ -362,7 +362,6 @@
     window.location.href = '../login/login.html';
   };
 
-  // ── Navegação / perfis ──
   function buildNav() {
     $("main-sidebar").querySelector(".sidebar-nav").innerHTML = NAV.filter((n) => n[3].includes(currentProfile)).map((n) =>
       `<a href="#" class="nav-item ${n[0] === currentPage ? "active" : ""}" data-page="${n[0]}" title="${n[1]}" onclick="event.preventDefault();navigateTo('${n[0]}')"><i data-lucide="${n[2]}"></i><span class="sidebar-text">${n[1]}</span></a>`).join("");
@@ -379,7 +378,6 @@
   const _sp = window.selectProfile;
   window.selectProfile = async function (k, l) { _sp(k, l); buildNav(); await navigateTo(can(currentPage) ? currentPage : "dashboard"); };
 
-  // Mantém as tabelas do Dashboard sincronizadas com os dados completos
   function syncDashboardData() {
     EDITAIS.length = 0; D.editais.slice(0, 5).forEach((e, i) => EDITAIS.push({ ...e, progress: [65, 90, 30, 45, 80][i] || 50, prazo: e.prazo }));
     PARECERES.length = 0; D.pareceres.forEach((p) => PARECERES.push({ id: p.id, edital: p.edital, titulo: p.titulo, status: BADGE[p.status][1], prazo: p.prazo }));

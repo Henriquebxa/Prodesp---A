@@ -84,7 +84,7 @@ export async function iniciarSms2FA(phone, password) {
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) throw new Error(data.error || 'Não foi possível enviar o SMS.');
-    return data; // { message, destination }
+    return data;
 }
 
 export async function ativarSms2FA(code) {
@@ -110,7 +110,7 @@ export async function iniciarConfiguracao2FA() {
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) throw new Error(data.error || 'Erro ao configurar o 2FA.');
-    return data; // { qr, secret }
+    return data;
 }
 
 export async function ativar2FA(code) {

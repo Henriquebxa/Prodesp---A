@@ -8,7 +8,8 @@
 body,
 html {
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
     background-color: #ffffff;
 }
 
@@ -21,7 +22,7 @@ html {
 .banner-side {
     flex: 1.2;
     background: linear-gradient(rgba(76, 37, 130, 0.35), rgba(76, 37, 130, 0.35)),
-        url() no-repeat center center;
+        url(../imgs/imagem.png) no-repeat center center;
     background-size: cover;
     border-right: 4px solid #4c2582;
 }
@@ -48,9 +49,9 @@ main {
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    margin-bottom: 30px;
+    margin-bottom: 28.5px;
     align-self: flex-start;
-    padding: 5px 0;
+    padding: 4px 0;
     transition: color 0.2s, transform 0.2s;
 }
 
@@ -70,7 +71,7 @@ main {
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 18.5px;
 }
 
 .prodesp-icon {
@@ -92,7 +93,7 @@ h1 {
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 25px;
+    margin-bottom: 23.5px;
     font-weight: 600;
     text-align: center;
 }
@@ -100,12 +101,13 @@ h1 {
 form {
     width: 100%;
     max-width: 320px;
+    display: flex;
     flex-direction: column;
 }
 
 .input-group {
     position: relative;
-    margin-bottom: 16px;
+    margin-bottom: 14.5px;
     display: flex;
     flex-direction: column;
 }
@@ -113,7 +115,7 @@ form {
 label {
     font-size: 11px;
     color: #8e8e8e;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
     font-weight: 500;
 }
 
@@ -122,7 +124,7 @@ input[type="password"] {
     width: 100%;
     border: none;
     border-bottom: 1.5px solid #cccccc;
-    padding: 6px 35px 6px 0; /* Adicionado padding à direita para o texto não ficar sob o ícone */
+    padding: 6px 35px 6px 0; 
     font-size: 14px;
     color: #333333;
     background-color: transparent;
@@ -135,7 +137,6 @@ input[type="password"]:focus {
     border-bottom-color: #4c2582;
 }
 
-/* Estilização e posicionamento do botão de alternar senha */
 .input-group button[type="button"] {
     position: absolute;
     right: 5px;
@@ -149,7 +150,6 @@ input[type="password"]:focus {
     justify-content: center;
 }
 
-/* Tamanho compacto e adequado para a imagem do ícone */
 .input-group button[type="button"] img {
     width: 20px;
     height: 20px;
@@ -177,7 +177,7 @@ button[type="submit"]:hover {
 
 .form-footer-links {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 13.5px;
     font-size: 11px;
     line-height: 1.6;
 }

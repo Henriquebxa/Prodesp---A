@@ -1,6 +1,5 @@
-
-import { Router } from 'express';
 import 'dotenv/config';
+import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { authenticator } from 'otplib';
@@ -248,12 +247,6 @@ async function validarTurnstileMiddleware(req, res, next) {
             }
         );
 
-        if (!verificacao.ok) {
-            return res.status(503).json({
-                error: 'Não foi possível verificar o CAPTCHA. Tente novamente.'
-            });
-        }
-
         const resultadoCaptcha = await verificacao.json();
 
         if (resultadoCaptcha.success !== true) {
@@ -264,7 +257,7 @@ async function validarTurnstileMiddleware(req, res, next) {
 
         next();
     } catch (erro) {
-        console.error('Erro ao verificar Turnstile:', erro);
+        console.error('Erro detalhado ao verificar Turnstile:', erro);
 
         return res.status(503).json({
             error: 'Não foi possível verificar o CAPTCHA. Tente novamente.'
@@ -272,7 +265,7 @@ async function validarTurnstileMiddleware(req, res, next) {
     }
 }
 
-router.post('/registrar', validarCPFMiddleware, async (req, res) => {
+router.post('/registrar', validarTurnstileMiddleware, validarCPFMiddleware, async (req, res) => {
     const { username, cpf, password } = req.body;
 
     if (

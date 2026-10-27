@@ -8,7 +8,8 @@
 body,
 html {
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
     background-color: #ffffff;
 }
 
@@ -21,7 +22,7 @@ html {
 .banner-side {
     flex: 1.2;
     background: linear-gradient(rgba(76, 37, 130, 0.35), rgba(76, 37, 130, 0.35)),
-        url(../img/prodesp.webp) no-repeat center center;
+        url(../imgs/prodesp.webp) no-repeat center center;
     background-size: cover;
     border-right: 4px solid #4c2582;
 }
@@ -134,7 +135,6 @@ input[type="text"]:focus,
 input[type="password"]:focus {
     border-bottom-color: #4c2582;
 }
-
 
 .input-group button[type="button"] {
     position: absolute;

@@ -47,5 +47,4 @@ export function loginFailureLimiter(maxFailures = 7, blockDurationInSeconds = 30
   };
 }
 
-// Exportação adicional com o alias para compatibilidade caso o server.js importe rateLimiter
 export const rateLimiter = loginFailureLimiter;
